@@ -4,23 +4,32 @@ import "fmt"
 
 // Definition for singly-linked list.
 type ListNode struct {
-     Val int
-     Next *ListNode
+	Val int
+	Next *ListNode
 }
 
 func addTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode {
 	var head *ListNode
-	var just_handle *ListNode
-	for l1 != nil{
+	var pre_handle *ListNode
+	extra := 0
+	for l1 != nil || l2 != nil || extra != 0{
 		cur := ListNode{}
-		if just_handle != nil{
-			just_handle.Next = &cur
+		if pre_handle != nil{
+			pre_handle.Next = &cur
 		}else{
 			head = &cur
 		}
-		just_handle = &cur
-		cur.Val = l1.Val + l2.Val
-		fmt.Println(cur.Val)
+		pre_handle = &cur
+		sum := extra
+		if l1 != nil{
+			sum = sum + l1.Val
+		}
+		if l2 != nil{
+			sum = sum + l2.Val
+		}
+
+		cur.Val = sum % 10
+		extra = sum / 10
 		l1 = l1.Next
 		l2 = l2.Next
 	}

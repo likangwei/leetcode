@@ -18,6 +18,30 @@
 * target 与 data[index] 相比较时，最好target在前面比较清晰
 
 
+# 2: Add Two Link List
+
+```
+在可以完成答案的情况下，可以不用太拘谨。 
+
+我的答案：
+	var head *ListNode
+	var pre_handle *ListNode
+	for bababa:
+		if pre_handle != nil{
+			pre_handle.Next = &cur
+		}else{
+			head = &cur
+		}
+	return head
+
+高手答案:
+     var head *ListNode
+     pre_handle = & head
+     for bababa:
+         省了我的if else
+     return head.next
+```
+
 树:
 # 95: 不同结构的平衡二叉树
  高手答案相对比我来讲, 没有生成过多的list, 而是用数字idx控制

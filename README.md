@@ -80,6 +80,7 @@ l, r = (m-1)/2, m/2
 >>>large_lst = nums1 if nums1[-1] > nums2[-1] else nums2
 >>> while large_i < len(large_lst) and hand_count++ < r
 
+后续改进: 多枚举几种极限情况，根据不同的维度，比如这个题目有两层维度 lenght 和 num
 ```
 
 

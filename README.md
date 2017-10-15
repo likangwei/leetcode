@@ -9,7 +9,6 @@
 
 ####算法速度
 * 算法类用while比较快，因为range和xrange都有开销
-* 不要怕破坏原始结构，例如排序、图edges
 * 能用数字表示或者idx来控制的话就不再生成一个list
 
 ###更清晰的实现
@@ -17,7 +16,8 @@
 * 有一些地方用 <= 比 < 更能清晰的表达index界限
 * target 与 data[index] 相比较时，最好target在前面比较清晰
 
-# 2: Add Two Link List
+## List
+### 2: Add Two Link List
 
 ```
 在可以完成答案的情况下，可以不用太拘谨。 
@@ -40,17 +40,56 @@
          省了我的if else
      return head.next
 ```
+### 4. Median of Two Sorted Arrays
+```
+Example 1:
+nums1 = [1, 3]
+nums2 = [2]
 
-树:
-# 95: 不同结构的平衡二叉树
+The median is 2.0
+Example 2:
+nums1 = [1, 2]
+nums2 = [3, 4]
+
+The median is (2 + 3)/2 = 2.5
+
+class Solution(object):
+    def findMedianSortedArrays(self, nums1, nums2):
+        """
+        :type nums1: List[int]
+        :type nums2: List[int]
+        :rtype: float
+        """
+
+我的答案没有考虑到
+nums1 = [1000], nums2 = range(1000) 的极限情况
+这样我那个算法的复杂度就是 N(m+n)
+3 = 1,1
+4 = 1,2
+5 = 2,2
+6 = 2,3
+假定
+m, n = len(nums1), len(nums2)
+l, r = (m-1)/2, m/2
+所以我那个算法可以由
+>>> while i < m and j < n
+改进成
+>>> while i < m and j < n and hand_count++ < r
+
+再优化一下， nums1[-1] > nums2[-1] ， 所以肯定是nums2先被handle完，可以再优化
+>>>large_lst = nums1 if nums1[-1] > nums2[-1] else nums2
+>>> while large_i < len(large_lst) and hand_count++ < r
+
+```
+
+
+## 树
+### 95: 不同结构的平衡二叉树
  高手答案相对比我来讲, 没有生成过多的list, 而是用数字idx控制
  后续改进: 在用到过多list的时候, 看看是否可以用数字代替, 或者 idx代替
 
-96: 遍历树返回list
-
-
-动态规划:
-122: 最好的股票卖出时间
+##动态规划:
+### 122: 最好的股票卖出时间
 
 
 ---

@@ -10,12 +10,14 @@ func max(a int, b int) int {
 }  
 
 func convert(s string, numRows int) string {
-	if len(s) < 2 || numRows == 1{
+	str_len := len(s)
+	if str_len < 2 || numRows == 1{
 		return s
 	}
+
 	var numColumns int
-	completeNum := len(s) / (numRows*2-2)
-	remainderNum := len(s) % (numRows*2-2)
+	completeNum := str_len / (numRows*2-2)
+	remainderNum := str_len % (numRows*2-2)
 	remainderColNum := 0
 	if remainderNum > 0{
 		remainderColNum = 1 + max(0, remainderNum-numRows)
@@ -31,15 +33,15 @@ func convert(s string, numRows int) string {
 		matrix[x] = make([]byte, numColumns)
 	}
 
-	for ; ci < len(s);{
+	for ; ci < str_len;{
 		// down
-		for m:=0; m<numRows-1 && ci < len(s); m++{
+		for m:=0; m<numRows-1 && ci < str_len; m++{
 			matrix[i][j] = s[ci]
 			ci += 1
 			i += 1
 		}
 		// up
-		for n:=0; n<numRows-1 && ci < len(s); n++{
+		for n:=0; n<numRows-1 && ci < str_len; n++{
 			matrix[i][j] = s[ci]
 			ci += 1
 			i -= 1
@@ -47,7 +49,7 @@ func convert(s string, numRows int) string {
 		}
 	}
 
-	rst := make([]byte, len(s))
+	rst := make([]byte, str_len)
 	c_idx := 0
 	for i := range matrix{
 		for j:= range matrix[i]{

@@ -23,28 +23,31 @@ func convert(s string, numRows int) string {
 		remainderColNum = 0
 	}
 	numColumns = completeNum *  (numRows-1) + remainderColNum
-	matrix := make([][]rune, numRows, numRows)
-	i, j := 0, 0
-	isDown := true
-	rst := make([]rune, len(s), len(s))
-	for t:=0; t<numRows; t++{
-		matrix[t] = make([]rune, numColumns)
+
+	matrix := make([][]byte, numRows, numRows)
+	ci, i, j := 0, 0, 0
+
+	for x:=0 ; x<numRows; x++{
+		matrix[x] = make([]byte, numColumns)
 	}
-	for _, c := range s{
-		matrix[i][j] = c
-		if i == 0{
-			isDown = true
+
+	for ; ci < len(s);{
+		// down
+		for m:=0; m<numRows-1 && ci < len(s); m++{
+			matrix[i][j] = s[ci]
+			ci += 1
+			i += 1
 		}
-		if i == numRows - 1{
-			isDown = false
-		}
-		if isDown{
-			i = i + 1 
-		}else{
-			i = i - 1
-			j = j + 1
+		// up
+		for n:=0; n<numRows-1 && ci < len(s); n++{
+			matrix[i][j] = s[ci]
+			ci += 1
+			i -= 1
+			j += 1
 		}
 	}
+
+	rst := make([]byte, len(s))
 	c_idx := 0
 	for i := range matrix{
 		for j:= range matrix[i]{

@@ -1,6 +1,8 @@
-// https://leetcode.com/problems/palindrome-number/description/
-高手的答案不知道是不是比我快，但是对于循环控制思路上很好
 /*
+https://leetcode.com/problems/palindrome-number/description/
+
+高手的答案不知道是不是比我快，但是对于循环控制思路上很好
+
 public class Solution {
     public bool IsPalindrome(int x) {
         // Special cases:

@@ -1,14 +1,11 @@
 
 
 /*
-https://leetcode.com/problems/regular-expression-matching/description/
-这个题目做了三天。。。
+https://leetcode.com/problems/longest-common-prefix/description/这个题目做了三天。。。
 
-总结：做这个题的主要特点是： 我可以眼动解决此问题，也有思路，但是在翻译成算法的时候，翻译过程非常
-慢，有可能是这两天没有好好休息的原因，也有可能是因为没有用纸笔写下来
+总结：
 
-后续优化：用笔和纸来写下自己的分析过程，再将其翻译，考虑下哪种可以实现？是递归还是别的什么的
-
+后续优化：
 
 */
 

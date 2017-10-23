@@ -14,41 +14,75 @@ func isMatch(s string, p string) bool {
 	if p == ".*"{
 		return true
 	}
-
+	if len(p) == 0{
+		return len(s) == 0
+	}
 
 	pc := p[0]
+	atlast_show := 0
+	star_count := 0
 	keep_loop := false
-	var si, pe int = 0, 1
-	if pe < len(p) && p[pe] == '*'{
-		keep_loop = true
-		pe += 1
-	}
-	if !keep_loop && si < len(s){
-		sc := s[si]
-		if pc == '.' || pc == sc{
-			return isMatch(s[si+1:], p[pe:])
-		}else{
-			return false
-		} 
-	}
-	fmt.Println("start this")
-
-	for ; si < len(s); si++{
-		sc := s[si]
-		if sc == pc || pc == '.'{
-			if isMatch(s[si+1:], p[pe:]){
-				return true
-			}
+	var pi, si int = 0, 0
+	for ; pi < len(p); {
+		if p[pi] == '*'{
+			pi += 1
+			star_count += 1
+			keep_loop = true
+		}else if p[pi] == pc{
+			pi += 1
 		}else{
 			break
 		}
 	}
+	atlast_show = pi - (2 * star_count)
+	// fmt.Printf("%s need %d %c\n", p[:pi], atlast_show, pc)
+	for ;atlast_show !=0 && si < len(s);{
+		if pc == '.' || pc == s[si]{
+			si += 1
+			atlast_show -= 1
+		}else{
+			break
+		}
+	}
+	if atlast_show != 0{
+		return false
+	}
 
-	return isMatch(s, p[pe:])
+
+	if !keep_loop{
+		return isMatch(s[si:], p[pi:])
+	}else{
+		for ; si < len(s); si++{
+			if isMatch(s[si:], p[pi:]){
+				return true
+			}
+			if s[si] == pc || pc == '.'{
+				// fmt.Println("i need ", s[si+1:], p[pi:])
+				// if isMatch(s[si+1:], p[pi:]){
+				// 	return true
+				// }
+			}else{
+				break
+			}
+		}
+		return isMatch(s[si:], p[pi:])
+	}
 }
 
 func main() {
-	to_test := []string{"aa", "a", "aa", "aa", "aaa", "aa", "aa", "a*", "aa", ".*", "ab", ".*", "aab", "c*a*b", "aaa", "a*a", "aaa", "ab*a*c*a", "a", "ab*", "ab", ".*c"}
+	to_test := []string{
+						// "aa", "a",
+						// "aa", "aa",
+						// "aaa", "aa",
+						// "aa", "a*",
+						// "aa", "c*a",
+						// "ab", ".*",
+						// "aab", "c*a*b",
+						// "aaa", "a*a",
+						"aaa", "ab*a*c*a",
+						// "a", "ab*",
+						// "ab", ".*c"
+					}
 	for i := 0; i < len(to_test); i=i+2{
 		fmt.Println(">>>", to_test[i], to_test[i+1], "rst:", isMatch(to_test[i], to_test[i+1]))
 	}

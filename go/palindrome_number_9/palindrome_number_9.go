@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-
-
 /*
 https://leetcode.com/problems/palindrome-number/description/
 
@@ -11,13 +8,9 @@ https://leetcode.com/problems/palindrome-number/description/
   高手对循环控制的思路上很好， 我比高手多了一个步骤，那就是求一个num的长度，本质上还是把一个数字当成字符串来处理
 
 # 高手答案
-=======
-/*
-https://leetcode.com/problems/palindrome-number/description/
 
 高手的答案不知道是不是比我快，但是对于循环控制思路上很好
 
->>>>>>> e6bbeea1d8895fd007253a92bd14d264a81feb6c
 public class Solution {
     public bool IsPalindrome(int x) {
         // Special cases:

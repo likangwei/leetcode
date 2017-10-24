@@ -37,7 +37,11 @@ func combinations(nums[]int , count int, fromIdx int)[][]int{
 			rst = append(rst, []int{cur_num})
 		}
 	}
+	// if len(rst) - len(set(rst)) > 0{
+	// 	fmt.Println(nums, count, fromIdx, rst, set(rst))
+	// }
 	rst = set(rst)
+	
 	return rst
 }
 
@@ -46,7 +50,6 @@ func set(nums [][]int) [][]int {
 	var rst [][]int = make([][]int, 0, 1)
 	m := make(map[string][]int)
 	for _ , lst := range nums{
-		sort.Ints(lst)
 		s := fmt.Sprint(lst)
 		m[s] = lst
 	}
@@ -59,8 +62,10 @@ func set(nums [][]int) [][]int {
 func fourSum(nums []int, target int) [][]int {
 
 	var rst [][]int = make([][]int, 0, 10)
+	sort.Ints(nums)
+	fmt.Println("nums", nums)
 	combs := combinations(nums, 4, 0)
-	combs = set(combs)
+	fmt.Println(len(combs), combs)
 	for i:=0; i<len(combs); i++{
 		cur_total := 0
 		cur_lst := combs[i]
@@ -76,12 +81,17 @@ func fourSum(nums []int, target int) [][]int {
 
 func main() {
 	to_test := [][]int{
-		[]int{1, 0, -1, 0, -2, 2},
-		[]int{0, 0, 0, 0},
-		[]int{-3,-2,-1,0,0,1,2,3},
+		// []int{1, 0, -1, 0, -2, 2},
+		// []int{0, 0, 0, 0},
+		// []int{-3,-2,-1,0,0,1,2,3},
 		[]int{-4,-3,-2,-1,0,0,1,2,3,4},
 	}
-	to_test2 := []int{0, 1, 0, 0}
+	to_test2 := []int{
+		// 0, 
+		// 1, 
+		// 0, 
+		0,
+	}
 	for i := 0; i < len(to_test); i=i+1{
 		rst := fourSum(to_test[i], to_test2[i])
 		fmt.Println(">>>", to_test[i], "rst:", rst, len(rst))

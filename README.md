@@ -12,13 +12,17 @@
 * 算法类用while比较快，因为range和xrange都有开销
 * 能用数字表示或者idx来控制的话就不再生成一个list
 * 用最直接的方式来实现需求，不用过早的想着优化加一些map来cache，或者用map[int][][int]的方式，lst的遍历是很耗时的
-
+* num list类用排序
 
 ###更清晰的翻译
 * 直译自己的思路，每一句代码在编写时要对照自己的解题思路，特别注意边界判断，idx判断等等，有一些地方用 <= 比 < 更能清晰的表达index界限
 * target 与 data[index] 相比较时，最好target在前面比较清晰
 * 在做index操作时，可以用弧线来表现到底跳动了几次
 * 可以用纸笔来协助记忆思考
+
+###小技巧
+* index 用 i, j, k
+* len 用m, n
 
 ## List
 ### 2: Add Two Link List

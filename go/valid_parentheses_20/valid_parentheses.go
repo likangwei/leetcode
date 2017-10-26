@@ -1,8 +1,7 @@
 
 
 /*
-https://leetcode.com/problems/4sum/description/
-
+https://leetcode.com/problems/valid-parentheses/description/
 总结：
 
 后续优化：
@@ -11,90 +10,73 @@ https://leetcode.com/problems/4sum/description/
 
 package main
 import "fmt"
-import "sort"
 
+func isValid(s string) bool {
+	str_len := len(s)
+	if str_len % 2 != 0{
+		return false
+	}
+	if s == ""{
+		return true
+	}
+	m := map[byte]byte{'}':'{', ')': '(', ']': '['}
 
-func combinations(nums[]int , count int, fromIdx int)[][]int{
-	var rst [][]int = make([][]int, 0, 1)
-	if len(nums) < (fromIdx + count){
-		return rst
-	}
-	if count == 0{
-		return [][]int{}
-	}
-	if len(nums) == (fromIdx + count){
-		return [][]int{nums[fromIdx:]}
-	}
-	for i:=fromIdx; i<len(nums); i++{
-		cur_num := nums[i]
-		if count - 1 >= 1{
-			combs := combinations(nums, count-1, i+1)
-			for j:=0; j<len(combs); j++{
-				tmp_lst := combs[j]
-				rst = append(rst, append(tmp_lst, cur_num))
+	max_stack_len := str_len / 2
+	left_stack := make([]int, max_stack_len)
+	cur_stack_len := 0
+
+	for i:=0; i<str_len; i++{
+		b := s[i]
+		if b == '{' || b == '(' || b == '['{
+			if cur_stack_len == max_stack_len{
+				return false
 			}
-		}else {
-			rst = append(rst, []int{cur_num})
+			left_stack[cur_stack_len] = i
+			cur_stack_len += 1
+			if cur_stack_len > max_stack_len{
+				return false
+			}
+		}else if cur_stack_len == 0{
+			return false
+		}else if b == '}' || b == ')' || b == ']' {
+			c, _ := m[b]
+			if c == s[left_stack[cur_stack_len-1]]{
+				cur_stack_len -= 1
+			}else{
+				return false
+			}
+		}else{
+				return false
 		}
 	}
-	// if len(rst) - len(set(rst)) > 0{
-	// 	fmt.Println(nums, count, fromIdx, rst, set(rst))
-	// }
-	rst = set(rst)
-	
-	return rst
+	return cur_stack_len == 0
+
 }
 
-
-func set(nums [][]int) [][]int {
-	var rst [][]int = make([][]int, 0, 1)
-	m := make(map[string][]int)
-	for _ , lst := range nums{
-		s := fmt.Sprint(lst)
-		m[s] = lst
-	}
-	for _, lst := range m{
-		rst = append(rst, lst)
-	}
-	return rst
-}
-
-func fourSum(nums []int, target int) [][]int {
-
-	var rst [][]int = make([][]int, 0, 10)
-	sort.Ints(nums)
-	fmt.Println("nums", nums)
-	combs := combinations(nums, 4, 0)
-	fmt.Println(len(combs), combs)
-	for i:=0; i<len(combs); i++{
-		cur_total := 0
-		cur_lst := combs[i]
-		for j:=0; j<len(cur_lst);j++{
-			cur_total += cur_lst[j]
-		}
-		if cur_total == target{
-			rst = append(rst, cur_lst)
-		}
-	}
-	return rst
-}
 
 func main() {
-	to_test := [][]int{
-		// []int{1, 0, -1, 0, -2, 2},
-		// []int{0, 0, 0, 0},
-		// []int{-3,-2,-1,0,0,1,2,3},
-		[]int{-4,-3,-2,-1,0,0,1,2,3,4},
+	to_test := []string{
+		"()",
+		"{}[]{}",
+		"[){",
+		"([)]",
+		"((",
 	}
-	to_test2 := []int{
-		// 0, 
-		// 1, 
-		// 0, 
-		0,
+	right := []bool{
+		true,
+		true,
+		false,
+		false,
+		false,
 	}
 	for i := 0; i < len(to_test); i=i+1{
-		rst := fourSum(to_test[i], to_test2[i])
-		fmt.Println(">>>", to_test[i], "rst:", rst, len(rst))
+		rst := isValid(to_test[i])
+		if right[i] == rst{
+				fmt.Println("right", to_test[i], "rst:", rst)
+			}else{
+				fmt.Println("wrong", to_test[i], "rst:", rst)
+			}
+		
 	}
 	
 }

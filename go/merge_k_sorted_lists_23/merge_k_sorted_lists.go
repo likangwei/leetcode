@@ -1,9 +1,47 @@
 /*
 https://leetcode.com/problems/merge-k-sorted-lists/description/
 
-总结：
+高手答案:
+func mergeKLists(lists []*ListNode) *ListNode {
+    amount := len(lists)
+    interval := 1
+    for interval < amount {
+        for i:=0; i<amount-interval; i+=interval*2 {
+            lists[i] = merge2Lists(lists[i], lists[i+interval])
+        }
+        interval *= 2
+    }
+    if amount > 0 {
+        return lists[0]
+    }
+    return nil
+}
+func merge2Lists(l1 *ListNode, l2 *ListNode) *ListNode {
+    head := &ListNode{}
+    curr := head
+    for l1 != nil && l2 != nil {
+        if l1.Val <= l2.Val {
+            curr.Next = l1
+            l1 = l1.Next
+        } else {
+            curr.Next = l2
+            l2 = l1
+            l1 = curr.Next.Next
+        }
+        curr = curr.Next
+    }
+    if l1 == nil {
+        curr.Next = l2
+    } else {
+        curr.Next = l1
+    }
+    return head.Next
+}
 
-后续优化：
+总结： 高手答案的思路，类似于快排，目的是尽量减少比对次数。 高手用两两合并的方式来进行排序，也有点类似于 晋升，如果入职时是一个
+比较高的职级，那也不用跟职级下的人比较了，又或者是竞技比赛，好多人比赛 不用所有人全部比一遍，而是通过晋级的方式来做
+
+其次，高手的这次优化主要是减少了比对次数
 
 */
 
@@ -26,7 +64,7 @@ func mergeKLists(lists []*ListNode) *ListNode {
 
 	list_len := len(lists)
 
-	for list_len != 0 {
+	for list_len > 1 {
 		min_num = math.MaxInt64
 		min_idx = -1
 		for idx:=0; idx<list_len;{
@@ -47,6 +85,9 @@ func mergeKLists(lists []*ListNode) *ListNode {
 			cur = cur.Next
 			lists[min_idx] = cur.Next
 		}
+	}
+	if list_len == 1{
+		cur.Next = lists[0]
 	}
 	return head.Next
 }

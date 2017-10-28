@@ -24,6 +24,7 @@
 * index 用 i, j, k
 * len 用m, n
 * 数组可以想象成算盘，多个index代表某一个算盘珠
+* for 循环时，有很多缓存，比如i为当前轮询值， 走到最后，要进行i++供下次使用，其他参数同理
 
 ## List
 ### 2: Add Two Link List

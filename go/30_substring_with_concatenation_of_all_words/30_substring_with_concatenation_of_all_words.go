@@ -15,7 +15,7 @@ https://leetcode.com/problems/substring-with-concatenation-of-all-words/descript
 
 当前水平改进：
   1. 为什么第一次耗时长，内存多？ 因为我喜欢遍历所有情况，将所有可能出现的情景都复现，有好多次这种操作了
-     
+
 
 
 高手答案
@@ -207,6 +207,72 @@ func findSubstring2(s string, words []string) []int {
 	return rst
 }
 
+func skip(s string, start, k int, word string, occurence map[string]int) int {
+	fmt.Println("skip", s, start, k, word, occurence)
+	var i int
+	for i = start; i <= len(s)-k; i += k {
+		w := s[i : i+k]
+		occurence[w]--
+		if w == word {
+			break
+		}
+	}
+	return i + k
+}
+
+func clearOccurence(occurence map[string]int) {
+	for word, _ := range occurence {
+		occurence[word] = 0
+	}
+}
+
+func find(s string, offset, k, total int, tbl map[string]int) []int {
+	fmt.Println(s, offset, k, total, tbl)
+	start := -1
+	res := make([]int, 0)
+	occurence := make(map[string]int)
+	for i := 0; i <= len(s)-k; i += k {
+		word := s[i : i+k]
+		fmt.Println(word)
+		if _, ok := tbl[word]; !ok {
+			start = -1
+			continue
+		}
+		if start == -1 {
+			start = i
+			clearOccurence(occurence)
+		}
+		occurence[word] += 1
+		if occurence[word] > tbl[word] {
+			start = skip(s, start, k, word, occurence)
+		}
+		if i+k-start == total {
+			res = append(res, start+offset)
+		}
+	}
+	return res
+}
+
+func findSubstring3(s string, words []string) []int {
+	if len(s) == 0 || len(words) == 0 {
+		return []int{}
+	}
+	k := len(words[0])
+	if len(s) < k {
+		return []int{}
+	}
+	tbl := make(map[string]int)
+	for _, word := range words {
+		tbl[word] += 1
+	}
+	total := len(words) * k
+	ans := make([]int, 0)
+	for i := 0; i < k; i++ {
+		res := find(s[i:], i, k, total, tbl)
+		ans = append(ans, res...)
+	}
+	return ans
+}
 
 func main() {
 	to_test := []string{
@@ -220,7 +286,7 @@ func main() {
 	}
 
 	for i:=0; i < len(to_test); i+=1{
-		rst := findSubstring2(to_test[i], param2[i])
+		rst := findSubstring3(to_test[i], param2[i])
 		fmt.Println(to_test[i], param2[i], rst)
 	}
 }

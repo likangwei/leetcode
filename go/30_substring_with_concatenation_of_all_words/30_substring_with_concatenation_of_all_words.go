@@ -28,7 +28,8 @@ func buildCombinationMap(words []string) *Map{
 	rst := Map{&childs}
 	for idx, s := range words{
 		fmt.Println("words", words)
-		left_words := words[0:idx]
+		left_words := []string{}
+		left_words = append(left_words, words[0:idx]...)
 		left_words = append(left_words, words[idx+1:len(words)]...)
 		fmt.Println(words, idx, "left", left_words)
 		childs[s] = buildCombinationMap(left_words)

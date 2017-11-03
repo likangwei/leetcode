@@ -13,9 +13,6 @@ https://leetcode.com/problems/substring-with-concatenation-of-all-words/descript
   1. 第一次耗时非常长， 用内存也多
   2. 第二次优化完，accept
 
-当前水平改进：
-  1. 为什么第一次耗时长，内存多？ 因为我喜欢遍历所有情况，将所有可能出现的情景都复现，有好多次这种操作了
-
 
 
 高手答案
@@ -82,7 +79,10 @@ func findSubstring(s string, words []string) []int {
 	}
 	return ans
 }
+当前水平改进：
+  1. 为什么第一次耗时长，内存多？ 因为我喜欢遍历所有情况，将所有可能出现的情景都复现，有好多次这种操作了
 
+高手答案没看懂。。
 */
 
 type Map struct {

@@ -30,6 +30,16 @@
 * 数组可以想象成算盘，多个index代表某一个算盘珠
 * for 循环时，有很多缓存，比如i为当前轮询值， 走到最后，要进行i++供下次使用，其他参数同理
 
+###数据结构总结
+* list。 特点
+* LinkList。 特点： 插入,删除 O(1), 可以加个map来实现快速定位
+* Map。 特点： 快速定位
+* BinaryTree
+* RedBlackTree
+* Dag
+* Graph
+
+
 ## List
 ### 2: Add Two Link List
 

@@ -152,15 +152,46 @@ func isValidSudoku(board [][]byte) bool {
 	for rowIdx, rowData :=  range board{
 		for cellIdx, cell := range rowData{
 			if cell != '.'{
-				fillSuccess := fill(board, vboard, rowIdx, cellIdx, cell)
-				if !fillSuccess{
-					return false
-				}
+				fill(board, vboard, rowIdx, cellIdx, cell)
+				
 			}
 		}
 	}
 	return isValidSudokuDetail(board, vboard)
 }
+
+func isValidSudoku2(board [][]byte) bool {
+
+	for i:=0; i<9; i++{
+		for j:=0; j<9; j++{
+			b := board[i][j]
+			if b != '.'{
+				for k:=0; k<9; k++{
+					if k != j && board[i][k] == b{
+						return false
+					}
+					if k != i && board[k][j] == b{
+						return false
+					}
+				}
+				headI, headJ := 3*(i/3), 3*(j/3)
+				for k:=headI; k<headI+3; k++{
+					for l:=headJ; l<headJ+3; l++{
+						if k==i && l==j{
+							continue
+						}else{
+							if board[k][l] == b{
+								return false
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	return true
+}
+
 
 func main() {
 	// to_test := [][]int{
@@ -202,8 +233,8 @@ func main() {
 	}
 	for i:=0; i < len(to_test); i++{
 		p1 := to_test[i]
-		rst := isValidSudoku(p1)
-		fmt.Println(p1, rst)
+		rst := isValidSudoku2(p1)
+		fmt.Println(getBoardStr(p1), rst)
 
 	}
 

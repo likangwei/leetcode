@@ -9,11 +9,14 @@ import "fmt"
 /*
 https://leetcode.com/problems/valid-sudoku/description/
 我的解决过程：
+  1. 竟然理解错了题意。。。 以为这个题的题意是 数独有没有解， 没想到竟然只是验证下当前已填充的数独是不是有效。。。
 
 高手答案: 
-
+   秒数相同
 
 当前水平改进：
+  虽然理解错了题意，但是我写出来的这个算法还是相当牛逼的。。。将一个数独有没有解写了出来。。。
+
 */
 
 func getBoardStr(board [][]byte) string{

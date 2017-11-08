@@ -104,11 +104,14 @@ func copyVBoard(board [][][]byte) [][][]byte{
 
 
 func isValidSudokuDetail(board[][]byte, vboard [][][]byte) bool{
-	// fmt.Println("isValidSudokuDetail", board, vboard)
+	// fmt.Println("isValidSudokuDetail\n", getBoardStr(board), vboard)
 	isValid := true
 	minLength, minRowIdx, minCellIdx := 10, -1, -1
 	for vRowIdx, vRow := range vboard{
 		for vCellIdx, cell := range vRow{
+			if board[vRowIdx][vCellIdx] == '.' && len(cell) == 0{
+				return false
+			}
 			if len(cell) > 0{
 				isValid = false
 				curLength := len(cell)
@@ -122,7 +125,7 @@ func isValidSudokuDetail(board[][]byte, vboard [][][]byte) bool{
 		}
 	}
 	if isValid{
-		// fmt.Println(getBoardStr(board))
+		fmt.Printf("valid==>\n%v", getBoardStr(board))
 		return true
 	}else{
 		for _, maybeNum := range vboard[minRowIdx][minCellIdx]{
@@ -133,6 +136,7 @@ func isValidSudokuDetail(board[][]byte, vboard [][][]byte) bool{
 					return true
 				}
 			}else{
+				fmt.Println("fill fail...")
 				return false
 			}
 
@@ -141,22 +145,27 @@ func isValidSudokuDetail(board[][]byte, vboard [][][]byte) bool{
 	}
 }
 
-func isValidSudoku(board [][]byte) bool {
+func isValidSudoku(board2 [][]byte) bool {
 	vboard := make([][][]byte, 9, 9)
+	board := make([][]byte, 9)
 	for i:=0; i < 9; i++{
 		vboard[i] = make([][]byte, 9, 9)
+		board[i] = []byte{}
 		for j:=0; j<9; j++{
+			board[i] = append(board[i], '.')
 			vboard[i][j] = make([]byte, 9, 9)
 			for k:=0; k<9; k++{
 				vboard[i][j][k] = byte('1'+k)
 			}
 		}
 	}
-	for rowIdx, rowData :=  range board{
+	for rowIdx, rowData :=  range board2{
 		for cellIdx, cell := range rowData{
 			if cell != '.'{
-				fill(board, vboard, rowIdx, cellIdx, cell)
-				
+				if !fill(board, vboard, rowIdx, cellIdx, cell){
+					fmt.Printf("fill fail...\n%v\nrowIdx:%v cellIdx:%v cell:%c\n", getBoardStr(board), rowIdx, cellIdx, cell)
+					return false
+				}
 			}
 		}
 	}
@@ -212,15 +221,15 @@ func main() {
 
 	to_test := [][][]byte{
 		[][]byte{
+			[]byte{'.', '.', '3', '8', '.', '1', '.', '.', '.'},
+			[]byte{'.', '.', '5', '.', '.', '.', '.', '.', '.'},
+			[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '7'},
+			[]byte{'.', '9', '.', '.', '7', '.', '.', '.', '2'},
+			[]byte{'.', '.', '8', '.', '.', '.', '.', '.', '.'},
+			[]byte{'.', '.', '.', '.', '.', '4', '.', '.', '.'},
+			[]byte{'2', '7', '.', '.', '6', '.', '.', '.', '.'},
 			[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
-			[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
-			[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
-			[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
-			[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
-			[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
-			[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
-			[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
-			[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
+			[]byte{'.', '6', '.', '.', '.', '9', '8', '1', '.'},
 		},
 		[][]byte{
 			[]byte{'.','8','7','6','5','4','3','2','1'},
@@ -233,10 +242,11 @@ func main() {
 			[]byte{'8','.','.','.','.','.','.','.','.'},
 			[]byte{'9','.','.','.','.','.','.','.','.'},
 		},
+
 	}
-	for i:=0; i < len(to_test); i++{
+	for i:=0; i < len(to_test)-1; i++{
 		p1 := to_test[i]
-		rst := isValidSudoku2(p1)
+		rst := isValidSudoku(p1)
 		fmt.Println(getBoardStr(p1), rst)
 
 	}

@@ -16,6 +16,17 @@ https://leetcode.com/problems/valid-sudoku/description/
 当前水平改进：
 */
 
+func getBoardStr(board [][]byte) string{
+	bts := []byte{}
+	for _, row := range board{
+		for _, cell := range row{
+			bts = append(bts, cell)
+		}
+		bts = append(bts, '\n')
+	}
+	return string(bts)
+}
+
 func ignoreOther(vboard [][][]byte, insert byte, rowIdx, colIdx int){
 	for i:=0; i < 9; i++{
 		for j, b := range vboard[rowIdx][i]{
@@ -48,7 +59,7 @@ func ignoreOther(vboard [][][]byte, insert byte, rowIdx, colIdx int){
 }
 
 func fill(board[][]byte, vboard [][][]byte, rowIdx, cellIdx int, insert byte)bool{
-	fmt.Println("fill",  rowIdx, cellIdx, insert)
+	// fmt.Println("fill",  rowIdx, cellIdx, insert)
 	if board[rowIdx][cellIdx] == '.'{
 		for _, k := range vboard[rowIdx][cellIdx]{
 			if k == insert{
@@ -58,10 +69,10 @@ func fill(board[][]byte, vboard [][][]byte, rowIdx, cellIdx int, insert byte)boo
 				return true
 			}
 		}
-		fmt.Println("fill not found in vboard", rowIdx, cellIdx)
+		// fmt.Println("fill not found in vboard", rowIdx, cellIdx)
 		return false
 	}else{
-		fmt.Println("filling, but it's not none at ", rowIdx, cellIdx)
+		// fmt.Println("filling, but it's not none at ", rowIdx, cellIdx)
 		return false
 	}
 }
@@ -90,7 +101,7 @@ func copyVBoard(board [][][]byte) [][][]byte{
 
 
 func isValidSudokuDetail(board[][]byte, vboard [][][]byte) bool{
-	fmt.Println("isValidSudokuDetail", board, vboard)
+	// fmt.Println("isValidSudokuDetail", board, vboard)
 	isValid := true
 	minLength, minRowIdx, minCellIdx := 10, -1, -1
 	for vRowIdx, vRow := range vboard{
@@ -108,6 +119,7 @@ func isValidSudokuDetail(board[][]byte, vboard [][][]byte) bool{
 		}
 	}
 	if isValid{
+		// fmt.Println(getBoardStr(board))
 		return true
 	}else{
 		for _, maybeNum := range vboard[minRowIdx][minCellIdx]{
@@ -133,7 +145,7 @@ func isValidSudoku(board [][]byte) bool {
 		for j:=0; j<9; j++{
 			vboard[i][j] = make([]byte, 9, 9)
 			for k:=0; k<9; k++{
-				vboard[i][j][k] = byte('0'+k)
+				vboard[i][j][k] = byte('1'+k)
 			}
 		}
 	}
@@ -164,20 +176,35 @@ func main() {
 	// 	[]string{"dhvf","sind","ffsl","yekr","zwzq","kpeo","cila","tfty","modg","ztjg","ybty","heqg","cpwo","gdcj","lnle","sefg","vimw","bxcb"},
 	// }
 
-	to_test := [][]byte{
-		[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
-		[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
-		[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
-		[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
-		[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
-		[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
-		[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
-		[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
-		[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
+	to_test := [][][]byte{
+		[][]byte{
+			[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
+			[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
+			[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
+			[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
+			[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
+			[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
+			[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
+			[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
+			[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
+		},
+		[][]byte{
+			[]byte{'.','8','7','6','5','4','3','2','1'},
+			[]byte{'2','.','.','.','.','.','.','.','.'},
+			[]byte{'3','.','.','.','.','.','.','.','.'},
+			[]byte{'4','.','.','.','.','.','.','.','.'},
+			[]byte{'5','.','.','.','.','.','.','.','.'},
+			[]byte{'6','.','.','.','.','.','.','.','.'},
+			[]byte{'7','.','.','.','.','.','.','.','.'},
+			[]byte{'8','.','.','.','.','.','.','.','.'},
+			[]byte{'9','.','.','.','.','.','.','.','.'},
+		},
 	}
+	for i:=0; i < len(to_test); i++{
+		p1 := to_test[i]
+		rst := isValidSudoku(p1)
+		fmt.Println(p1, rst)
 
-	p1 := to_test
-	rst := isValidSudoku(p1)
-	fmt.Println(p1, rst)
+	}
 
 }

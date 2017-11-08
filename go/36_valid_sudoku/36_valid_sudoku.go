@@ -48,17 +48,20 @@ func ignoreOther(vboard [][][]byte, insert byte, rowIdx, colIdx int){
 }
 
 func fill(board[][]byte, vboard [][][]byte, rowIdx, cellIdx int, insert byte)bool{
+	fmt.Println("fill",  rowIdx, cellIdx, insert)
 	if board[rowIdx][cellIdx] == '.'{
 		for _, k := range vboard[rowIdx][cellIdx]{
 			if k == insert{
 				board[rowIdx][cellIdx] = insert
+				vboard[rowIdx][cellIdx] = []byte{}
 				ignoreOther(vboard, insert, rowIdx, cellIdx)
 				return true
 			}
 		}
+		fmt.Println("fill not found in vboard", rowIdx, cellIdx)
 		return false
 	}else{
-		fmt.Println("it's not none at ", rowIdx, cellIdx)
+		fmt.Println("filling, but it's not none at ", rowIdx, cellIdx)
 		return false
 	}
 }
@@ -87,8 +90,9 @@ func copyVBoard(board [][][]byte) [][][]byte{
 
 
 func isValidSudokuDetail(board[][]byte, vboard [][][]byte) bool{
+	fmt.Println("isValidSudokuDetail", board, vboard)
 	isValid := true
-	minLength, minRowIdx, minCellIdx := 9, -1, -1
+	minLength, minRowIdx, minCellIdx := 10, -1, -1
 	for vRowIdx, vRow := range vboard{
 		for vCellIdx, cell := range vRow{
 			if len(cell) > 0{
@@ -135,9 +139,11 @@ func isValidSudoku(board [][]byte) bool {
 	}
 	for rowIdx, rowData :=  range board{
 		for cellIdx, cell := range rowData{
-			fillSuccess := fill(board, vboard, rowIdx, cellIdx, cell)
-			if !fillSuccess{
-				return false
+			if cell != '.'{
+				fillSuccess := fill(board, vboard, rowIdx, cellIdx, cell)
+				if !fillSuccess{
+					return false
+				}
 			}
 		}
 	}
@@ -159,15 +165,15 @@ func main() {
 	// }
 
 	to_test := [][]byte{
-		[]byte{'.', '.', '.', '.', '.', '.', '.', '.'},
-		[]byte{'.', '.', '.', '.', '.', '.', '.', '.'},
-		[]byte{'.', '.', '.', '.', '.', '.', '.', '.'},
-		[]byte{'.', '.', '.', '.', '.', '.', '.', '.'},
-		[]byte{'.', '.', '.', '.', '.', '.', '.', '.'},
-		[]byte{'.', '.', '.', '.', '.', '.', '.', '.'},
-		[]byte{'.', '.', '.', '.', '.', '.', '.', '.'},
-		[]byte{'.', '.', '.', '.', '.', '.', '.', '.'},
-		[]byte{'.', '.', '.', '.', '.', '.', '.', '.'},
+		[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
+		[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
+		[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
+		[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
+		[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
+		[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
+		[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
+		[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
+		[]byte{'.', '.', '.', '.', '.', '.', '.', '.', '.'},
 	}
 
 	p1 := to_test

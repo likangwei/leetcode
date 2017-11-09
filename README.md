@@ -25,8 +25,6 @@
 * 可以用纸笔来协助记忆思考
 
 ###小技巧
-* index 用 i, j, k
-* len 用m, n
 * 数组可以想象成算盘，多个index代表某一个算盘珠
 * for 循环时，有很多缓存，比如i为当前轮询值， 走到最后，要进行i++供下次使用，其他参数同理
 
@@ -39,6 +37,12 @@
 * Dag
 * Graph
 
+###命名积累
+  index 用 i, j, k
+  len 用m, n
+  position: 二维的idx
+  options: 选项
+  occupied: 占据的， unoccupied: 未被占据的
 
 ## List
 ### 2: Add Two Link List

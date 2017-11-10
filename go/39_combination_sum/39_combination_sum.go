@@ -35,7 +35,29 @@ func combinationSum(candidates []int, target int) [][]int {
 }
 
 当前水平改进：
-   
+func change(x []int){
+	x[0] = 2
+}
+
+func change3(x[] int){
+	x = []int{3, 3, 3}
+}
+
+func change2(x *[]int){
+    *x = ([]int{1, 1, 1})
+}
+
+func main() {
+	a := []int{1}
+	fmt.Println(a)  // [1]
+	change(a)
+	fmt.Println(a)  // [2]
+	change2(&a)
+	fmt.Println(a)  // [1 1 1]
+	change3(a)
+	fmt.Println(a)  // [1 1 1]
+}
+
 
 */
 

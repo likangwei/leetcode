@@ -104,7 +104,39 @@ func combinationSum(candidates []int, target int) [][]int {
 	sort.Ints(candidates)
 	return combinationSum2(candidates, target, 0)
 }
+func combinationDfs2(input []int, idx int, t int, buf *[]int, out *[][]int) {
+    if t == 0 {
+        found := make([]int, len(*buf))
+        copy(found, *buf)
+        *out = append(*out, found)
+    } else {
+        for j := idx; j < len(input); j++ {        
+            if j > idx && input[j] == input[j - 1] {
+                continue
+            }
+            
+            d := input[j]
+            
+            if (t < d) {
+                break
+            }
+            
+            (*buf) = append((*buf), d)      /* push d */
+            combinationDfs2(input, j + 1, t - d, buf, out)
+            (*buf) = (*buf)[:len(*buf) - 1] /* pod */
+        }         
+    }
+}
 
+func combinationSum4(candidates []int, target int) [][]int {
+    var buf []int
+    var out [][]int
+
+    sort.Ints(candidates)
+    combinationDfs2(candidates, 0, target, &buf, &out)
+
+    return out;
+}
 
 func main() {
 	to_test := [][]int{
@@ -139,7 +171,7 @@ func main() {
 	// }
 	for i:=0; i < len(to_test); i++{
 		p1 := to_test[i]
-		rst := combinationSum(p1, to_test2[i])
+		rst := combinationSum4(p1, to_test2[i])
 		fmt.Println(p1, rst)
 	}
 

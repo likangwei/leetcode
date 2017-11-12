@@ -1,9 +1,3 @@
-/*
-https://leetcode.com/problems/implement-strstr/description/
-高手答案 xms < xms
-
-*/
-
 package main
 import "fmt"
 /*
@@ -37,6 +31,16 @@ func searchRange(nums []int, target int) []int {
    高手一个for range 就能达到19ms。。。
    1. 简单的代码最有效，最好是，自带的这种 for range， ==之类的，那是相当高效的
    2. 后续写项目的时候记住，再没发现瓶颈之前，不要过早优化，用最简单的代码实现。。。
+
+1. vs高手
+    a) 命名：高手用first, last来标记最前面的和最后面的， 而我用的是i, j不如高手精准
+    b) 行数：16 < 34
+    c) 思路：高手直接用for循环来达到目标，而且算法还比我的二分查找+两边扩展快，也是醉了，说明for range真的是非常快
+    d) 技巧：
+    e) 此题感悟： 当真是过早优化是万恶之源啊
+
+2. 此题感悟
+    
 */
 
 func bsearch(nums[]int, target int) int{

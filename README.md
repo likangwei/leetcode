@@ -2,14 +2,18 @@
 ---
 ###后续改进
 
+####感悟
+
+* 提前优化是万恶之源
+* 直译思路，遇到困难，或者难翻译的地方不要想着跳过去  # leetcode.No.40
+
 ####算法思路
 
-* 不要怕破坏原始结构，例如排序、图edges
-* 将大脑里的想法，慢慢转换成算法
+* 不要怕破坏原始结构，例如排序、图edges            # 旷视面试
 * 正着循环的算法 看看可以根据情况倒着来吗
-* 用最直接的方式来解决问题，而不是拐弯抹角，也别过多的想着优化，先解决当前问题
-* 在手动验证算法思路时，要根据testcase的多个维度制造，比如nums []int, 要从排序，长度等维度来造几个数据
 
+####思路正确性
+* 在手动验证算法思路时，要根据testcase的多个维度制造，比如nums []int, 要从排序，长度等维度来造几个数据
 
 ####算法速度
 * 算法类用while比较快，因为range和xrange都有开销
@@ -23,10 +27,12 @@
 * target 与 data[index] 相比较时，最好target在前面比较清晰
 * 在做index操作时，可以用弧线来表现到底跳动了几次
 * 可以用纸笔来协助记忆思考
+* 直译自己的思路，有一些不太好翻译的地方，不要绕过去，而是想办法直译，因为毕竟有很多代码模式自己没见过
 
 ###小技巧
 * 数组可以想象成算盘，多个index代表某一个算盘珠
-* for 循环时，有很多缓存，比如i为当前轮询值， 走到最后，要进行i++供下次使用，其他参数同理
+* for 循环时，有很多缓存的参数，比如i为当前轮询值，走到for loop 最后，要进行i++供下次使用，其他参数同理
+
 
 ###数据结构总结
 * list。 特点
@@ -43,147 +49,8 @@
   position: 二维的idx
   options: 选项
   occupied: 占据的， unoccupied: 未被占据的
-
-## List
-### 2: Add Two Link List
-
-```
-在可以完成答案的情况下，可以不用太拘谨。 
-
-我的答案：
-	var head *ListNode
-	var pre_handle *ListNode
-	for bababa:
-		if pre_handle != nil{
-			pre_handle.Next = &cur
-		}else{
-			head = &cur
-		}
-	return head
-
-高手答案:
-     var head *ListNode
-     pre_handle = & head
-     for bababa:
-         省了我的if else
-     return head.next
-```
-### 4. Median of Two Sorted Arrays
-```
-Example 1:
-nums1 = [1, 3]
-nums2 = [2]
-
-The median is 2.0
-Example 2:
-nums1 = [1, 2]
-nums2 = [3, 4]
-
-The median is (2 + 3)/2 = 2.5
-
-class Solution(object):
-    def findMedianSortedArrays(self, nums1, nums2):
-        """
-        :type nums1: List[int]
-        :type nums2: List[int]
-        :rtype: float
-        """
-
-我的答案没有考虑到
-nums1 = [1000], nums2 = range(1000) 的极限情况
-这样我那个算法的复杂度就是 N(m+n)
-3 = 1,1
-4 = 1,2
-5 = 2,2
-6 = 2,3
-假定
-m, n = len(nums1), len(nums2)
-l, r = (m-1)/2, m/2
-所以我那个算法可以由
->>> while i < m and j < n
-改进成
->>> while i < m and j < n and hand_count++ < r
-
-再优化一下， nums1[-1] > nums2[-1] ， 所以肯定是nums2先被handle完，可以再优化
->>>large_lst = nums1 if nums1[-1] > nums2[-1] else nums2
->>> while large_i < len(large_lst) and hand_count++ < r
-
-后续改进: 多枚举几种极限情况，根据不同的维度，比如这个题目有两层维度 lenght 和 num
-```
-
-
-## 树
-### 95: 不同结构的平衡二叉树
- 高手答案相对比我来讲, 没有生成过多的list, 而是用数字idx控制
- 后续改进: 在用到过多list的时候, 看看是否可以用数字代替, 或者 idx代替
-
-##动态规划:
-### 122: 最好的股票卖出时间
-
-
----
-```
-题目: N*M的网格，将水倒入最上角网格，问一共流过了几个网格
-grid = [[3, 5, 1], [2, 1, 5], [4,2, 1]]
-n, m = len(grid), len(grid[0])
-lst = [(0,0)]
-rst = set()
-while lst:
-    element = lst.pop()
-    rst.add(element)
-    i, j = element
-    left, right, top, bottom = (i, j-1), (i, j+1), (i-1, j), (i+1, j)
-    for t in [left, right, top, bottom]:
-        if t not in rst and 0 <= t[0] <= (n-1) and 0 <= t[1] <= (m-1):
-            if grid[i][j] >= grid[t[0]][t[1]]:
-                lst.append(t)
-print len(rst)
-
-```
-
-
----
-```
-一个list [n0, n1, n2,...] 求最大和子集
-
-```
-
----
-```
-3SUM
-For example, given array S = [-1, 0, 1, 2, -1, -4],
-
-A solution set is:
-[
-  [-1, 0, 1],
-  [-1, -1, 2]
-]
-#高手答案
-def threeSum(self, nums):
-    res = []
-    nums.sort()
-    for i in xrange(len(nums)-2):
-        if i > 0 and nums[i] == nums[i-1]:
-            continue
-        l, r = i+1, len(nums)-1
-        while l < r:
-            s = nums[i] + nums[l] + nums[r]
-            if s < 0:
-                l +=1 
-            elif s > 0:
-                r -= 1
-            else:
-                res.append((nums[i], nums[l], nums[r]))
-                while l < r and nums[l] == nums[l+1]:
-                    l += 1
-                while l < r and nums[r] == nums[r-1]:
-                    r -= 1
-                l += 1; r -= 1
-    return res
-
-复盘：我的办法属于暴力破解法，效率低
-后需改进： 不要怕破坏原始数据的数据结构, 包括： 排序，图等等
-```
+  hi, lo 来代表高低位
+  
 
 
 ---

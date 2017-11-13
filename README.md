@@ -61,7 +61,7 @@
   options: 选项
   occupied: 占据的， unoccupied: 未被占据的
   hi, lo 来代表高低位
-  first, last 来用于前后出现的位置
+  first, last 来用于前后出现的位置. tail表示尾巴，最后一段， last是最后一个
 ```
 
 ---

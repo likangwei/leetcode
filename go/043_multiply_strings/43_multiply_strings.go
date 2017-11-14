@@ -5,7 +5,7 @@ import "fmt"
 https://leetcode.com/problems/valid-sudoku/description/
 
 我的解决过程：
-
+  1st: multiplyLst 100ms 太慢了。。。
 
 高手答案:  6ms < 9ms
 

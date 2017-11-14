@@ -38,14 +38,39 @@ func multiply(num1 string, num2 string) string {
 	a) 命名: 
 	b) 行数: 26 < 42
 	c) 思路: 高手选择了先不进行“进位”， 而是最后进位， 我是每循环一次都要把结果加一次
-	d) 技巧：1）如果有一个为"0"则返回0
+	d) 技巧：1）如果有一个为"0"则返回0, make可以只传一个len
+
+	高手主要比我快在以下几点：
+	1） 少一层缓存
+	   //高手
+	   for i in num1:
+	       for j in num2:
+	           rst[i+j] += num1[i]*num[j]
+	   //我
+	   for i in num1:
+	       cache = []
+	       for j in num2:
+	           cache[i+j] = num1[i]*num[j]
+	       for x in rst:
+	           # merge cache to rst
+
+	2) 高手选择了先不进行“进位”， 而是最后进位， 我是每循环一次都要把结果加一次
+	3）如果有0直接返回0
+	4）idx从0开始算，而我是倒叙开始算，我这个算起来稍微比较复杂
+
 
 2. 此题感悟
-	在昨完第一轮时，感觉自己的直译还是不够精准，而且耗时太长，则进行了第二次开发，耗时9ms，复合预期
-    第一次作答弯弯扭扭的拐了太多弯，比如改变成int来乘啦什么的，还加入了递归，完全没必要，还降低了速度。。。
+	在昨完第一轮时，感觉自己的直译还是不够精准，而且耗时太长，则进行了第二次开发，耗时9ms，符合预期，但与
+	高手还是有很大差距，虽然在速度上一个是6ms，一个9ms，但是在细节上还是有很大差距，如上面我总结的4点。
 
-后续改进：
-    在思路上，切记复杂，切记要正，要直切要害， 另外可以通过写伪代码的方式来做，由上往下递归填充代码
+	后续改进：
+	  * 能不用缓存就不用，争取一次性将结果计算出来装箱。针对1
+	  * 在可以极速返回结果的特殊情况，多考虑一下。针对3
+      * 在思路上，切记复杂，切记要正，要直切要害， 另外可以通过写伪代码的方式来做，由上往下递归填充代码。针对我的1st答案
+      * 临摹还是有用的，发现了之前没发现的问题。 临摹时，确实发现了diff，就是高手比我少存了一个中间层数组
+    第一次作答弯弯扭扭的拐了太多弯，比如改变成int来乘啦什么的，还加入了递归，完全没必要，还降低了速度。。。
+   
+
 */
 
 func getInteger(lst []byte)int{
@@ -174,6 +199,37 @@ func multiply2(num1 string, num2 string) string {
 }
 
 
+func multiply3(num1 string, num2 string) string {
+	// 临摹
+	if num1 == "0" || num2 == "0"{
+		return "0"
+	}
+	rst := make([]int, len(num1)+len(num2)-1, len(num1)+len(num2)-1)
+	for i:=len(num1)-1; i>=0; i--{
+		for j:=len(num2)-1; j>=0; j--{
+			iLeft := len(num1)-1-i
+			jLeft := len(num2)-1-j
+			n := (int(num1[i]-'0') * int(num2[j]-'0'))
+			rst[len(rst)-1-iLeft-jLeft] = rst[len(rst)-1-iLeft-jLeft] + n
+		}
+	}
+
+	buf := 0
+	bts := make([]byte, len(rst))
+	for i:=len(rst)-1; i>=0; i--{
+		n := rst[i] + buf
+		buf = 0
+		if n > 9{
+			n, buf = n%10, n/10
+		}
+		bts[i] = '0' + byte(n)
+	}
+	if buf > 0{
+		return string(byte('0'+buf)) + string(bts)
+	}
+	return string(bts)
+}
+
 func main() {
 	// to_test := [][]int{
 	// 	[]int{2, 3, 6, 7},
@@ -189,6 +245,7 @@ func main() {
 
 	to_test := [][]string{
 		[]string{"0", "0"},
+		[]string{"5", "12"},
 		[]string{"9133", "0"},
 		[]string{"1234", "999"},
 		[]string{"9223372036854775808", "9223372036854775808"},
@@ -209,7 +266,7 @@ func main() {
 	// }
 	for i:=0; i < len(to_test); i++{
 		p1, p2:= to_test[i][0], to_test[i][1]
-		rst := multiply2(p1, p2)
+		rst := multiply3(p1, p2)
 		fmt.Println(p1, p2, rst)
 	}
 

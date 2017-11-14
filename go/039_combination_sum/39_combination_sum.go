@@ -34,7 +34,27 @@ func combinationSum(candidates []int, target int) [][]int {
 	return results
 }
 
-当前水平改进：
+
+1. vs高手
+    a) 命名 combination 组合
+    b) 行数 24 < 44
+    c) 思路 高手的思路是直译了到底递归应该怎么样递归，而我是利用数学层面来写的到底怎么算才能把结果弄出来
+    d) 技巧： 递归时，带着一个框子把结果装起来
+    e) 此题感悟：
+        1）高手翻译更精确一些，后续不应绕过，哪怕能通过数学来解决此事
+        2）递归时，带框子去装rst
+        3) 关于需要一个unique组合的数据，题目 原始数据有误重复数据 是非常关键的因素
+        4）扩展：组合分为几种 
+           a) 算盘式组合: 各自不重合 == itertools.combinations, itertools.product
+           b) 重合式组合: 自己与自己重合 == itertools.combinations_with_replacement
+           c) 原始数据有重复数据的组合，输出set: 第一个数可以包含后续所有情况 
+           d) 原始数据无重复数据的组合, 输出set: idx可以随意后移
+
+
+2. 此题感悟
+    在直译方面，还需加强。用最直接的方案解决问题
+
+知识点：
 func change(x []int){
 	x[0] = 2
 }
@@ -57,8 +77,6 @@ func main() {
 	change3(a)
 	fmt.Println(a)  // [1 1 1]
 }
-
-
 */
 
 func combinationSum2(candidates []int, target int, fidx int) [][]int {

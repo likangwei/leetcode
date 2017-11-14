@@ -17,6 +17,15 @@ https://leetcode.com/problems/valid-sudoku/description/
 当前水平改进：
   虽然理解错了题意，但是我写出来的这个算法还是相当牛逼的。。。将一个数独有没有解写了出来。。。
 
+
+1. vs高手
+    a) 命名
+    b) 行数
+    c) 思路
+    d) 技巧
+    e) 此题感悟
+
+2. 此题感悟
 */
 
 func getBoardStr(board [][]byte) string{

@@ -52,7 +52,7 @@ https://leetcode.com/problems/valid-sudoku/description/
 */
 
 func isMatch3(s string, p string) bool {
-	fmt.Println("isMatch3", s, p)
+	fmt.Println("isMatch3", len(p), p)
 	if p == "*"{
 		return true
 	}
@@ -78,12 +78,17 @@ func isMatch3(s string, p string) bool {
 		}
 	}
 	p = p[i:]
+	
+	if len(matchStr) > len(s){
+		return false
+	}
+
 	endIdx := len(s) - len(matchStr)
 	if !hasStart{
 		endIdx = cCount
 	}
 	for j:=cCount; j<=endIdx; j++{
-		fmt.Println(j, j+len(matchStr), matchStr, s)
+		// fmt.Println(j, j+len(matchStr), matchStr, s)
 		if s[j:j+len(matchStr)] == matchStr{
 			if isMatch3(s[j+len(matchStr):], p){
 				return true

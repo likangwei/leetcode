@@ -1,6 +1,7 @@
 
 package main
 import "fmt"
+import "strings"
 /*
 https://leetcode.com/problems/valid-sudoku/description/
 
@@ -51,51 +52,103 @@ https://leetcode.com/problems/valid-sudoku/description/
 
 */
 
-func isMatch3(s string, p string) bool {
-	fmt.Println("isMatch3", len(p), p)
-	if p == "*"{
-		return true
+func getValidComb(combs [][][]int, buf [][]int, rst *([][][]int)){
+	if len(combs) == 0{
+		*rst = append(*rst, buf)
+		return
 	}
+	for x := range combs{
+		if len(x) == 0{
+			return [][][]int{}
+		}
+	}
+	curIdx := combs[0]
+
+	for idx, comb := range curIdx{
+		if len(buf) != 0{
+			lastOne := buf[len(buf)-1]
+			if lastOne[0] < comb[0] && lastOne[1] < comb[1]{
+				return
+			}
+		}
+		buf = append(buf, comb)
+	}
+	getValidComb(combs[1:], buf, rst)
+}
+
+func cleanP(p string)[]string{
+	rst := []string{}
+	
+	for i:=0; i<len(p); {
+		c := p[i]
+		if c == '*' || c == '?'{
+			j := i
+			for ; j<len(p) && (p[j] == '*'|| p[j] == '?'); j++{}
+			rst = append(rst, p[i:j])
+			i = j
+			continue
+		}
+		j := i
+		for ; j<len(p) && p[j] != '*' && p[j] != '?'; j++{}
+		rst = append(rst, p[i:j])
+		i = j
+	}
+	return rst
+}
+
+func isMatch3_2(s string, p []string)bool{
+	// fmt.Println("isMatch3_2", s, p)
 	if len(p) == 0{
 		return len(s) == 0
 	}
-
-	matchStr, hasStart, cCount := "", false, 0
-	i := 0
-	for ; i<len(p); i++{
-		if p[i] == '*'{
-			hasStart = true
-		}else if p[i] == '?'{
-			cCount ++
-			if cCount > len(s){
-				return false
-			}
-		}else{
-			first := i
-			for ;i<len(p) && p[i] != '*' && p[i] != '?'; i++{}
-			matchStr = p[first:i]
-			break
-		}
-	}
-	p = p[i:]
-	
-	if len(matchStr) > len(s){
+	if len(s) < len(p)/2{
 		return false
 	}
 
-	endIdx := len(s) - len(matchStr)
-	if !hasStart{
-		endIdx = cCount
+	if len(p) == 1{
+		if p[0] == "*"{
+			return true
+		}else if p[0] == "?"{
+			return len(s) == 1
+		}else{
+			return p[0] == s
+		}
 	}
-	for j:=cCount; j<=endIdx; j++{
-		// fmt.Println(j, j+len(matchStr), matchStr, s)
-		if s[j:j+len(matchStr)] == matchStr{
-			if isMatch3(s[j+len(matchStr):], p){
-				return true
+
+	idxCombs := make([][][]int, 0, 0)
+	for idx, ps := range p{
+		
+		if ps == "*" || ps == "?"{
+			continue
+		}else{
+			idxCombs = append(idxCombs, [][]int{})
+			curComb := &idxCombs[len(idxCombs)-1]
+			f := strings.Index(s, ps)
+			if f == -1{
+				return false
+			}
+			for ; f != -1; {
+				*curComb = append(*curComb, []int{f, f+len(ps)})
+				f = strings.Index(s[f+1:], ps)
 			}
 		}
 	}
+	fmt.Println(validCombs)
+	validCombs := getValidComb(idxCombs)
+	if len(validCombs) == 0{
+		return false
+	}
+	for comb := range validCombs{
+
+	}
+
 	return false
+}
+
+func isMatch3(s string, p string) bool {
+	ps := cleanP(p)
+	// fmt.Println("isMatch3", s, ps)
+	return isMatch3_2(s, ps)
 }
 
 
@@ -177,6 +230,9 @@ func main() {
 		[]string{"aaabbbaabaaaaababaabaaabbabbbbbbbbaabababbabbbaaaaba", "a*******b"},
 		[]string{"aaba", "?***"},
 		[]string{"abbabaaabbabbaababbabbbbbabbbabbbabaaaaababababbbabababaabbababaabbbbbbaaaabababbbaabbbbaabbbbababababbaabbaababaabbbababababbbbaaabbbbbabaaaabbababbbbaababaabbababbbbbababbbabaaaaaaaabbbbbaabaaababaaaabb", "**aa*****ba*a*bb**aa*ab****a*aaaaaa***a*aaaa**bbabb*b*b**aaaaaaaaa*a********ba*bbb***a*ba*bb*bb**a*b*bb"},
+		[]string{"abefcdgiescdfimde", "ab*cd?i*de"},
+		[]string{"aaaaaabbaabaaaaabababbabbaababbaabaababaaaaabaaaabaaaabababbbabbbbaabbababbbbababbaaababbbabbbaaaaaaabbaabbbbababbabbaaabababaaaabaaabaaabbbbbabaaabbbaabbbbbbbaabaaababaaaababbbbbaabaaabbabaabbaabbaaaaba", "*bbb**a*******abb*b**a**bbbbaab*b*aaba*a*b**a*abb*aa****b*bb**abbbb*b**bbbabaa*b**ba**a**ba**b*a*a**aaa"},
+
 	}
 
 	// to_test := [][][]byte{

@@ -51,11 +51,6 @@ https://leetcode.com/problems/valid-sudoku/description/
 
 */
 
-func formatPattern(p string) []string{}{
-	rst := []string{}
-	
-}
-
 func isMatch3(s string, p string) bool {
 	fmt.Println("isMatch3", s, p)
 	if p == "*"{
@@ -64,7 +59,7 @@ func isMatch3(s string, p string) bool {
 	if len(p) == 0{
 		return len(s) == 0
 	}
-	
+
 	matchStr, hasStart, cCount := "", false, 0
 	i := 0
 	for ; i<len(p); i++{
@@ -78,18 +73,19 @@ func isMatch3(s string, p string) bool {
 		}else{
 			first := i
 			for ;i<len(p) && p[i] != '*' && p[i] != '?'; i++{}
-			matchStr = p[first:i+1]
-			p = p[i:]
+			matchStr = p[first:i]
 			break
 		}
 	}
+	p = p[i:]
 	endIdx := len(s) - len(matchStr)
 	if !hasStart{
 		endIdx = cCount
 	}
 	for j:=cCount; j<=endIdx; j++{
+		fmt.Println(j, j+len(matchStr), matchStr, s)
 		if s[j:j+len(matchStr)] == matchStr{
-			if isMatch3(s[j:], p){
+			if isMatch3(s[j+len(matchStr):], p){
 				return true
 			}
 		}

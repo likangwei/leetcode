@@ -7,7 +7,7 @@ https://leetcode.com/problems/valid-sudoku/description/
 我的解决过程：
   1st: 算法太慢，但比较简洁
   2nd: 优化 *** 为 *
-  3rd: 优化 *a ,在 bbba是将a与a做比较
+  3rd: 优化 *?aaaa
   这次优点:
      直译能力增强
 
@@ -64,36 +64,37 @@ func isMatch3(s string, p string) bool {
 	if len(p) == 0{
 		return len(s) == 0
 	}
-	pc := string(p[0])
-	if pc != "?" && pc != "*"{
-		i := 0
-		for ;i<len(p) && p[i] != '*' && p[i] != '?'; i++{}
-		pc = p[0:i]
-		p = p[i:]
-	}else if pc == "*"{
-		i := 0
-		for ;i<len(p) && p[i] == '*'; i++{}
-		p = p[i:]
-	}else{
-		p = p[1:]
+	
+	matchStr, hasStart, cCount := "", false, 0
+	i := 0
+	for ; i<len(p); i++{
+		if p[i] == '*'{
+			hasStart = true
+		}else if p[i] == '?'{
+			cCount ++
+			if cCount > len(s){
+				return false
+			}
+		}else{
+			first := i
+			for ;i<len(p) && p[i] != '*' && p[i] != '?'; i++{}
+			matchStr = p[first:i+1]
+			p = p[i:]
+			break
+		}
 	}
-	fmt.Println("left", pc, p, s)
-
-	if pc == "*"{
-		for i:=0; i<len(s); i++{
-			if isMatch3(s[i:], p){
+	endIdx := len(s) - len(matchStr)
+	if !hasStart{
+		endIdx = cCount
+	}
+	for j:=cCount; j<=endIdx; j++{
+		if s[j:j+len(matchStr)] == matchStr{
+			if isMatch3(s[j:], p){
 				return true
 			}
 		}
-		return isMatch3("", p)
-	}else if len(s)>0 && pc == "?"{
-		return isMatch3(s[1:], p)
-	}else{
-		if len(pc) <= len(s) && pc == s[:len(pc)]{
-			return isMatch3(s[len(pc):], p)
-		}
-		return false
 	}
+	return false
 }
 
 

@@ -52,6 +52,55 @@ https://leetcode.com/problems/valid-sudoku/description/
 
 */
 
+type ReBlock struct{
+	S string
+	MinLen int
+	IsStrMode bool
+	HasStar bool
+}
+
+func splitP(p string)[]string{
+	rst := []*ReBlock{}
+	for i:=0; i<len(p); {
+		c := p[i]
+		block := ReBlock{}
+		if c == '*' || c == '?'{
+			minLin := 0
+			j := i
+			for ; j<len(p); j++{
+				if p[j] == '*'{
+					block.HasStar = true
+				}else if p[j] = '?'{
+					block.MinLen = block.MinLen+1
+				}else{
+					break
+				}
+			}
+			block.S = p[i:j]
+			rst = append(rst, &block)
+			i = j
+			continue
+		}
+		j := i
+		for ; j<len(p) && p[j] != '*' && p[j] != '?'; j++{
+			block.MinLen = block.MinLen + 1
+		}
+		block.S = p[i:j]
+		blocl.IsStrMode = true
+		rst = append(rst, &block)
+		i = j
+	}
+	return rst
+}
+
+func hasValidComb(s string, plst []*ReBlock, step int, fromIdx int) bool {
+	if step == len(plst){
+		return true
+	}
+	
+
+}
+
 func getValidComb(combs [][][]int, buf [][]int, rst *([][][]int)){
 	if len(combs) == 0{
 		*rst = append(*rst, buf)

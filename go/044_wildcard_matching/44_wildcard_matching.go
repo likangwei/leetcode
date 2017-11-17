@@ -1,9 +1,9 @@
 
 package main
 import "fmt"
-import "strings"
+// import "strings"
 /*
-https://leetcode.com/problems/valid-sudoku/description/
+https://leetcode.com/problems/wildcard-matching/description/
 
 我的解决过程：
   1st: 算法太慢，但比较简洁
@@ -57,147 +57,267 @@ type ReBlock struct{
 	MinLen int
 	IsStrMode bool
 	HasStar bool
+	Scope []int
+	IsLockLeft bool
+	IsLockRight bool
+	Pre *ReBlock
+	Next *ReBlock
+	P string
+	isValid bool
 }
 
-func splitP(p string)[]string{
-	rst := []*ReBlock{}
+func isMatch3_3(s string, r *ReBlock)bool{
+	rst := false
+	if r.IsStrMode{
+		rst = s == r.S
+	}else if r.HasStar{
+		rst = len(s) >= r.MinLen
+	}else{
+		rst = len(s) == r.MinLen
+	}
+	// fmt.Println("isMatch33", s, r.S, rst)
+	return rst
+}
+
+func (r ReBlock) Zoom(){
+	before := r
+	fmt.Printf("before: %v\n", before.Str())
+
+	if !r.HasStar{
+		if r.IsLockLeft && !r.IsLockRight{
+			r.Scope[1] = r.Scope[0] + r.MinLen
+			r.IsLockRight = true
+		}
+		if r.IsLockRight && !r.IsLockLeft{
+			r.Scope[0] = r.Scope[1] - r.MinLen
+			r.IsLockLeft = true
+		}
+	}
+	if !r.IsLockLeft{
+		if r.Pre.Scope[0] + r.Pre.MinLen > r.Scope[0]{
+				r.Scope[0] = r.Pre.Scope[0] + r.Pre.MinLen
+		}
+		if r.Pre != nil && r.Pre.IsLockRight{
+			r.IsLockLeft = true
+			r.Scope[0] = r.Pre.Scope[1]
+		}
+	}
+	if !r.IsLockRight{
+		if r.Next.Scope[1] - r.Next.MinLen < r.Scope[1]{
+			r.Scope[1] = r.Next.Scope[1] - r.Next.MinLen
+		}
+		if r.Next != nil && r.Next.IsLockLeft{
+			r.IsLockRight = true
+			r.Scope[1] = r.Next.Scope[0]
+		}
+	}
+	if r.Scope[1] - r.Scope[0] == r.MinLen{
+		r.IsLockLeft = true
+		r.IsLockRight = true
+	}
+	// if r.Pre != nil{
+	// 	if (!before.IsLockLeft && r.IsLockLeft) || (before.Scope[1] > r.Scope[0]){
+	// 		r.Pre.Zoom()
+	// 	}
+	// } 
+	// if r.Next != nil{
+	// 	if (before.Scope[0] < r.Scope[0]) || (!before.IsLockRight && r.IsLockRight){
+	// 		r.Next.Zoom()
+	// 	}
+	// }
+	fmt.Printf("after: %v\n", r.Str())
+
+}
+
+func (r ReBlock) Valid() bool{
+	if !r.isValid{
+		return false
+	}
+	if r.Scope[1] - r.Scope[0] < r.MinLen{
+		r.isValid = false
+		return false
+	}
+	if r.IsLockLeft && r.IsLockRight{
+		s := r.P[r.Scope[0]:r.Scope[1]]
+		r.isValid = isMatch3_3(s, &r)
+		return r.isValid
+	}
+	return true
+}
+
+func (r ReBlock) Str() string {
+	return fmt.Sprintf("%s: minLen:%d, Scope: %v, isStr: %v lock:[%v, %v]", r.S, r.MinLen, r.Scope, r.IsStrMode, r.IsLockLeft, r.IsLockRight)
+}
+
+func (r ReBlock) Link() string {
+	idx := 1
+	rst := ""
+	p := &r
+	for p != nil{
+		rst += fmt.Sprintf("%d. %v\n", idx, p.Str())
+		p = p.Next
+		idx++
+	}
+	return rst
+}
+
+func (r ReBlock) SetLeft(n int) bool{
+	if r.IsLockLeft{
+		if r.Scope[0] == n{
+			return true
+		}else{
+			fmt.Println("i'm locked. dont set left ", n, "scope", r.Scope)
+			return false
+		}
+	}
+	if r.Scope[0] < n{
+		r.Scope[0] = n
+		if !r.Valid(){
+			return false
+		}
+		if r.Next != nil{
+			r.Next.Zoom()
+		}
+	}
+	return true
+}
+
+func (r ReBlock) SetRight(n int) bool{
+	if r.IsLockRight{
+		if r.Scope[1] == n{
+			return true
+		}else{
+			fmt.Println("i'm locked. dont set right ", n, r.Str())
+		}
+	}
+	if r.Scope[1] > n{
+		r.Scope[1] = n
+		if r.Valid(){
+			if r.Pre != nil{
+				r.Pre.Zoom()
+			}
+		}else{
+			return false
+		}
+	}
+	return true
+}
+
+func splitP(s string, p string)*ReBlock{
+	
+	head := ReBlock{}
+	pre := &head
+
 	for i:=0; i<len(p); {
 		c := p[i]
 		block := ReBlock{}
+		block.Scope = []int{0, len(s)}
+		block.P = s
+
 		if c == '*' || c == '?'{
-			minLin := 0
 			j := i
 			for ; j<len(p); j++{
 				if p[j] == '*'{
 					block.HasStar = true
-				}else if p[j] = '?'{
+				}else if p[j] == '?'{
 					block.MinLen = block.MinLen+1
 				}else{
 					break
 				}
 			}
 			block.S = p[i:j]
-			rst = append(rst, &block)
 			i = j
-			continue
-		}
-		j := i
-		for ; j<len(p) && p[j] != '*' && p[j] != '?'; j++{
-			block.MinLen = block.MinLen + 1
-		}
-		block.S = p[i:j]
-		blocl.IsStrMode = true
-		rst = append(rst, &block)
-		i = j
-	}
-	return rst
-}
-
-func hasValidComb(s string, plst []*ReBlock, step int, fromIdx int) bool {
-	if step == len(plst){
-		return true
-	}
-	
-
-}
-
-func getValidComb(combs [][][]int, buf [][]int, rst *([][][]int)){
-	if len(combs) == 0{
-		*rst = append(*rst, buf)
-		return
-	}
-	for x := range combs{
-		if len(x) == 0{
-			return [][][]int{}
-		}
-	}
-	curIdx := combs[0]
-
-	for idx, comb := range curIdx{
-		if len(buf) != 0{
-			lastOne := buf[len(buf)-1]
-			if lastOne[0] < comb[0] && lastOne[1] < comb[1]{
-				return
-			}
-		}
-		buf = append(buf, comb)
-	}
-	getValidComb(combs[1:], buf, rst)
-}
-
-func cleanP(p string)[]string{
-	rst := []string{}
-	
-	for i:=0; i<len(p); {
-		c := p[i]
-		if c == '*' || c == '?'{
+		}else{
 			j := i
-			for ; j<len(p) && (p[j] == '*'|| p[j] == '?'); j++{}
-			rst = append(rst, p[i:j])
+			for ; j<len(p) && p[j] != '*' && p[j] != '?'; j++{
+				block.MinLen = block.MinLen + 1
+			}
+			block.S = p[i:j]
+			block.IsStrMode = true
 			i = j
-			continue
 		}
-		j := i
-		for ; j<len(p) && p[j] != '*' && p[j] != '?'; j++{}
-		rst = append(rst, p[i:j])
-		i = j
+		block.Pre = pre
+		pre.Next = &block
+		pre = &block
+	}
+	pre.IsLockRight = true
+	var rst *ReBlock
+	rst = head.Next
+	if rst != nil{
+		rst.Pre = nil
+		head.Next = nil
+		rst.IsLockLeft = true
 	}
 	return rst
 }
 
-func isMatch3_2(s string, p []string)bool{
-	// fmt.Println("isMatch3_2", s, p)
-	if len(p) == 0{
-		return len(s) == 0
+
+func isMatch3_2(s string, r *ReBlock, stepIdx, fromIdx int) bool {
+	fmt.Println(s, r.Str(), stepIdx, fromIdx)
+	if r == nil{
+		return fromIdx == len(s)
 	}
-	if len(s) < len(p)/2{
+
+	r.Zoom()
+	if fromIdx < r.Scope[0] || fromIdx > r.Scope[1]{
+		return false
+	}
+	if r.IsLockLeft && fromIdx != r.Scope[0]{
 		return false
 	}
 
-	if len(p) == 1{
-		if p[0] == "*"{
-			return true
-		}else if p[0] == "?"{
-			return len(s) == 1
-		}else{
-			return p[0] == s
-		}
+	if r.Pre == nil && r.Next == nil{
+		return isMatch3_3(s, r)
 	}
 
-	idxCombs := make([][][]int, 0, 0)
-	for idx, ps := range p{
+	if !r.Valid(){
+		return false
+	}
+	if r.IsLockRight{
+		return isMatch3_2(s, r.Next, stepIdx+1, r.Scope[1])
+	}
+
+	if r.HasStar{
+		for i:=r.Scope[1]; i>=r.Scope[0]+r.MinLen; i--{
+			r.Zoom()
+			if isMatch3_3(s[fromIdx:i], r){
+				if isMatch3_2(s, r.Next, stepIdx+1, i){
+					return true
+				}
+			}
+
+			if r.IsLockLeft{
+				if !r.SetRight(i-1){
+					return false
+				}
+			}
 		
-		if ps == "*" || ps == "?"{
-			continue
-		}else{
-			idxCombs = append(idxCombs, [][]int{})
-			curComb := &idxCombs[len(idxCombs)-1]
-			f := strings.Index(s, ps)
-			if f == -1{
+		}
+	}else{
+		for i:=r.Scope[1]; i>=fromIdx+r.MinLen; i--{
+			r.Zoom()
+			if !r.Valid(){
 				return false
 			}
-			for ; f != -1; {
-				*curComb = append(*curComb, []int{f, f+len(ps)})
-				f = strings.Index(s[f+1:], ps)
+			if isMatch3_3(s[fromIdx:i], r){
+				if isMatch3_2(s, r.Next, stepIdx+1, i){
+					return true
+				}
+			}
+			if r.IsLockLeft{
+				if !r.SetRight(i-1){
+					return false
+				}
 			}
 		}
 	}
-	fmt.Println(validCombs)
-	validCombs := getValidComb(idxCombs)
-	if len(validCombs) == 0{
-		return false
-	}
-	for comb := range validCombs{
-
-	}
-
 	return false
 }
 
 func isMatch3(s string, p string) bool {
-	ps := cleanP(p)
-	// fmt.Println("isMatch3", s, ps)
-	return isMatch3_2(s, ps)
+	phead := splitP(s, p)
+	fmt.Println(phead.Link())
+	return isMatch3_2(s, phead, 0, 0)
 }
 
 
@@ -268,12 +388,13 @@ func main() {
 	// }
 
 	to_test := [][]string{
+		[]string{"abcdefg", "a*fg"},
 		[]string{"", "?"},
 		[]string{"ho", "ho**"},
 		[]string{"a", "a"},
 		[]string{"a", "aa"},
 		[]string{"aa", "aa"},
-		[]string{"aaa", "aa"},
+		[]string{"aaaaaaaa", "aa"},
 		[]string{"ab", "?*"},
 		[]string{"aab", "c*a*b"},
 		[]string{"aaabbbaabaaaaababaabaaabbabbbbbbbbaabababbabbbaaaaba", "a*******b"},
@@ -281,7 +402,7 @@ func main() {
 		[]string{"abbabaaabbabbaababbabbbbbabbbabbbabaaaaababababbbabababaabbababaabbbbbbaaaabababbbaabbbbaabbbbababababbaabbaababaabbbababababbbbaaabbbbbabaaaabbababbbbaababaabbababbbbbababbbabaaaaaaaabbbbbaabaaababaaaabb", "**aa*****ba*a*bb**aa*ab****a*aaaaaa***a*aaaa**bbabb*b*b**aaaaaaaaa*a********ba*bbb***a*ba*bb*bb**a*b*bb"},
 		[]string{"abefcdgiescdfimde", "ab*cd?i*de"},
 		[]string{"aaaaaabbaabaaaaabababbabbaababbaabaababaaaaabaaaabaaaabababbbabbbbaabbababbbbababbaaababbbabbbaaaaaaabbaabbbbababbabbaaabababaaaabaaabaaabbbbbabaaabbbaabbbbbbbaabaaababaaaababbbbbaabaaabbabaabbaabbaaaaba", "*bbb**a*******abb*b**a**bbbbaab*b*aaba*a*b**a*abb*aa****b*bb**abbbb*b**bbbabaa*b**ba**a**ba**b*a*a**aaa"},
-
+		[]string{"baaabbabbbaabbbbbbabbbaaabbaabbbbbaaaabbbbbabaaaaabbabbaabaaababaabaaabaaaabbabbbaabbbbbaababbbabaaabaabaaabbbaababaaabaaabaaaabbabaabbbabababbbbabbaaababbabbaabbaabbbbabaaabbababbabababbaabaabbaaabbba", "*b*ab*bb***abba*a**ab***b*aaa*a*b****a*b*bb**b**ab*ba**bb*bb*baab****bab*bbb**a*a*aab*b****b**ba**abba"},
 	}
 
 	// to_test := [][][]byte{
@@ -297,6 +418,7 @@ func main() {
 	// 		[]byte{'.','.','.','2','7','5','9','.','.'},
 	// 	},
 	// }
+	to_test = to_test[0:1]
 	for i:=0; i < len(to_test); i++{
 		p1, p2:= to_test[i][0], to_test[i][1]
 		rst := isMatch3(p1, p2)

@@ -73,7 +73,7 @@ func isMatch3_3(s string, r *ReBlock)bool{
 func (r *ReBlock) Zoom(){
 	beforeScope := []int{r.Scope[0], r.Scope[1]}
 	before_lock := []bool{r.IsLockLeft, r.IsLockRight}
-	fmt.Println("start zoom: ", r.Str())
+	// fmt.Println("start zoom: ", r.Str())
 	if !r.HasStar{
 		if r.IsLockLeft && !r.IsLockRight{
 			r.Scope[1] = r.Scope[0] + r.MinLen
@@ -112,33 +112,41 @@ func (r *ReBlock) Zoom(){
 	}
 	if r.Pre != nil && !r.Pre.IsLockRight{
 		if (!before_lock[0] && r.IsLockLeft) || (beforeScope[1] > r.Scope[1]){
-			fmt.Printf("invke others:%v\nbefore:\n beforlock %v beforescope %v \nafter:\n %v\n\n\n", r.Pre.Str(), before_lock, beforeScope, r.Str())
+			// fmt.Printf("invke others:%v\nbefore:\n beforlock %v beforescope %v \nafter:\n %v\n\n\n", r.Pre.Str(), before_lock, beforeScope, r.Str())
 			r.Pre.Zoom()
 		}
 	} 
 	if r.Next != nil && !r.Next.IsLockLeft{
 		if (beforeScope[0] < r.Scope[0]) || (!before_lock[1] && r.IsLockRight){
-			fmt.Printf("invke others:%v\nbefore:\n beforlock %v beforescope %v \nafter:\n %v\n\n\n", r.Next.Str(), before_lock, beforeScope, r.Str())
+			// fmt.Printf("invke others:%v\nbefore:\n beforlock %v beforescope %v \nafter:\n %v\n\n\n", r.Next.Str(), before_lock, beforeScope, r.Str())
 			r.Next.Zoom()
 		}
 	}
-	fmt.Println("end zoom: ", r.Str())
+	// fmt.Println("end zoom: ", r.Str())
 }
 
 func (r *ReBlock) Valid() bool{
+	if (r.IsValid){
+		if r.Scope[1] - r.Scope[0] < r.MinLen{
+			r.IsValid = false
+		} else if r.IsLockLeft && r.IsLockRight{
+			s := r.P[r.Scope[0]:r.Scope[1]]
+			r.IsValid = isMatch3_3(s, r)
+		}
+	}
+	
 	if (!r.IsValid){
-		return false
+		pre, next := r, r
+		for pre != nil{
+			pre.IsValid = false
+			pre = pre.Pre
+		}
+		for next != nil{
+			next.IsValid = false
+			next = next.Next
+		}
 	}
-	if r.Scope[1] - r.Scope[0] < r.MinLen{
-		r.IsValid = false
-		return false
-	}
-	if r.IsLockLeft && r.IsLockRight{
-		s := r.P[r.Scope[0]:r.Scope[1]]
-		r.IsValid = isMatch3_3(s, r)
-		return r.IsValid
-	}
-	return true
+	return r.IsValid
 }
 
 func (r *ReBlock) Str() string {
@@ -277,7 +285,7 @@ func isMatch3_2(s string, r *ReBlock, fromIdx int) bool {
 	fmt.Println(5)
 	if r.HasStar{
 		fmt.Println("has star")
-		for i:=r.Scope[1]; i>=r.Scope[0]+r.MinLen; i--{
+		for i:=r.Scope[1]; r.Valid() && i>=r.Scope[0]+r.MinLen && fromIdx<=i; i--{
 			r.Zoom()
 			fmt.Println("star...", fromIdx, i)
 			if isMatch3_3(s[fromIdx:i], r){
@@ -294,7 +302,7 @@ func isMatch3_2(s string, r *ReBlock, fromIdx int) bool {
 		
 		}
 	}else{
-		for i:=r.Scope[1]; i>=fromIdx+r.MinLen; i--{
+		for i:=r.Scope[1]; r.Valid() && i>=fromIdx+r.MinLen && fromIdx<=i; i--{
 			r.Zoom()
 			if !r.Valid(){
 				return false

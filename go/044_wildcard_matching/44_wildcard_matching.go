@@ -253,7 +253,7 @@ func splitP(s string, p string)*ReBlock{
 
 
 func isMatch3_2(s string, r *ReBlock, stepIdx, fromIdx int) bool {
-	fmt.Println(s, r.Str(), stepIdx, fromIdx)
+	fmt.Println("match 3.2  ", s, r.Str(), stepIdx, fromIdx)
 	if r == nil{
 		return fromIdx == len(s)
 	}

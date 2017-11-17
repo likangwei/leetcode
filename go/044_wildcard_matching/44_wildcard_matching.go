@@ -39,16 +39,7 @@ https://leetcode.com/problems/wildcard-matching/description/
 
 
 2. 此题感悟
-	在昨完第一轮时，感觉自己的直译还是不够精准，而且耗时太长，则进行了第二次开发，耗时9ms，符合预期，但与
-	高手还是有很大差距，虽然在速度上一个是6ms，一个9ms，但是在细节上还是有很大差距，如上面我总结的4点。
-
-	后续改进：
-	  * 能不用缓存就不用，争取一次性将结果计算出来装箱。针对1
-	  * 在可以极速返回结果的特殊情况，多考虑一下。针对3
-	  * 在思路上，切记复杂，切记要正，要直切要害， 另外可以通过写伪代码的方式来做，由上往下递归填充代码。针对我的1st答案
-	  * 临摹还是有用的，发现了之前没发现的问题。 临摹时，确实发现了diff，就是高手比我少存了一个中间层数组
-	第一次作答弯弯扭扭的拐了太多弯，比如改变成int来乘啦什么的，还加入了递归，完全没必要，还降低了速度。。。
-   
+	方法 struct 方法 带不带 *
 
 */
 
@@ -63,7 +54,7 @@ type ReBlock struct{
 	Pre *ReBlock
 	Next *ReBlock
 	P string
-	isValid bool
+	IsValid bool
 }
 
 func isMatch3_3(s string, r *ReBlock)bool{
@@ -79,10 +70,10 @@ func isMatch3_3(s string, r *ReBlock)bool{
 	return rst
 }
 
-func (r ReBlock) Zoom(){
-	before := r
-	fmt.Printf("before: %v\n", before.Str())
-
+func (r *ReBlock) Zoom(){
+	beforeScope := []int{r.Scope[0], r.Scope[1]}
+	before_lock := []bool{r.IsLockLeft, r.IsLockRight}
+	fmt.Println("start zoom: ", r.Str())
 	if !r.HasStar{
 		if r.IsLockLeft && !r.IsLockRight{
 			r.Scope[1] = r.Scope[0] + r.MinLen
@@ -115,53 +106,57 @@ func (r ReBlock) Zoom(){
 		r.IsLockLeft = true
 		r.IsLockRight = true
 	}
-	// if r.Pre != nil{
-	// 	if (!before.IsLockLeft && r.IsLockLeft) || (before.Scope[1] > r.Scope[0]){
-	// 		r.Pre.Zoom()
-	// 	}
-	// } 
-	// if r.Next != nil{
-	// 	if (before.Scope[0] < r.Scope[0]) || (!before.IsLockRight && r.IsLockRight){
-	// 		r.Next.Zoom()
-	// 	}
-	// }
-	fmt.Printf("after: %v\n", r.Str())
-
+	if !r.Valid(){
+		fmt.Println("invalid", r.Str())
+		return 
+	}
+	if r.Pre != nil && !r.Pre.IsLockRight{
+		if (!before_lock[0] && r.IsLockLeft) || (beforeScope[1] > r.Scope[1]){
+			fmt.Printf("invke others:%v\nbefore:\n beforlock %v beforescope %v \nafter:\n %v\n\n\n", r.Pre.Str(), before_lock, beforeScope, r.Str())
+			r.Pre.Zoom()
+		}
+	} 
+	if r.Next != nil && !r.Next.IsLockLeft{
+		if (beforeScope[0] < r.Scope[0]) || (!before_lock[1] && r.IsLockRight){
+			fmt.Printf("invke others:%v\nbefore:\n beforlock %v beforescope %v \nafter:\n %v\n\n\n", r.Next.Str(), before_lock, beforeScope, r.Str())
+			r.Next.Zoom()
+		}
+	}
+	fmt.Println("end zoom: ", r.Str())
 }
 
-func (r ReBlock) Valid() bool{
-	if !r.isValid{
+func (r *ReBlock) Valid() bool{
+	if (!r.IsValid){
 		return false
 	}
 	if r.Scope[1] - r.Scope[0] < r.MinLen{
-		r.isValid = false
+		r.IsValid = false
 		return false
 	}
 	if r.IsLockLeft && r.IsLockRight{
 		s := r.P[r.Scope[0]:r.Scope[1]]
-		r.isValid = isMatch3_3(s, &r)
-		return r.isValid
+		r.IsValid = isMatch3_3(s, r)
+		return r.IsValid
 	}
 	return true
 }
 
-func (r ReBlock) Str() string {
-	return fmt.Sprintf("%s: minLen:%d, Scope: %v, isStr: %v lock:[%v, %v]", r.S, r.MinLen, r.Scope, r.IsStrMode, r.IsLockLeft, r.IsLockRight)
+func (r *ReBlock) Str() string {
+	return fmt.Sprintf(" %s: HasStar: %v, minLen:%d, Scope: %v, isStr: %v lock:[%v, %v]. Valid:%v", r.S, r.HasStar,r.MinLen,  r.Scope, r.IsStrMode, r.IsLockLeft, r.IsLockRight, r.IsValid)
 }
 
-func (r ReBlock) Link() string {
+func (r *ReBlock) Link() string {
 	idx := 1
 	rst := ""
-	p := &r
-	for p != nil{
-		rst += fmt.Sprintf("%d. %v\n", idx, p.Str())
-		p = p.Next
+	for r != nil{
+		rst += fmt.Sprintf("%d. %v\n", idx, r.Str())
+		r = r.Next
 		idx++
 	}
 	return rst
 }
 
-func (r ReBlock) SetLeft(n int) bool{
+func (r *ReBlock) SetLeft(n int) bool{
 	if r.IsLockLeft{
 		if r.Scope[0] == n{
 			return true
@@ -182,7 +177,7 @@ func (r ReBlock) SetLeft(n int) bool{
 	return true
 }
 
-func (r ReBlock) SetRight(n int) bool{
+func (r *ReBlock) SetRight(n int) bool{
 	if r.IsLockRight{
 		if r.Scope[1] == n{
 			return true
@@ -213,7 +208,7 @@ func splitP(s string, p string)*ReBlock{
 		block := ReBlock{}
 		block.Scope = []int{0, len(s)}
 		block.P = s
-
+		block.IsValid = true
 		if c == '*' || c == '?'{
 			j := i
 			for ; j<len(p); j++{
@@ -252,11 +247,11 @@ func splitP(s string, p string)*ReBlock{
 }
 
 
-func isMatch3_2(s string, r *ReBlock, stepIdx, fromIdx int) bool {
-	fmt.Println("match 3.2  ", s, r.Str(), stepIdx, fromIdx)
+func isMatch3_2(s string, r *ReBlock, fromIdx int) bool {
 	if r == nil{
 		return fromIdx == len(s)
 	}
+	fmt.Println("\n\nmatch 3.2  ", s, r.Str(), fromIdx)
 
 	r.Zoom()
 	if fromIdx < r.Scope[0] || fromIdx > r.Scope[1]{
@@ -265,23 +260,28 @@ func isMatch3_2(s string, r *ReBlock, stepIdx, fromIdx int) bool {
 	if r.IsLockLeft && fromIdx != r.Scope[0]{
 		return false
 	}
-
+	fmt.Println(1)
 	if r.Pre == nil && r.Next == nil{
 		return isMatch3_3(s, r)
 	}
-
+	fmt.Println(2)
 	if !r.Valid(){
 		return false
 	}
+	fmt.Println(3)
 	if r.IsLockRight{
-		return isMatch3_2(s, r.Next, stepIdx+1, r.Scope[1])
-	}
+		fmt.Println(4)
+		return isMatch3_2(s, r.Next, r.Scope[1])
 
+	}
+	fmt.Println(5)
 	if r.HasStar{
+		fmt.Println("has star")
 		for i:=r.Scope[1]; i>=r.Scope[0]+r.MinLen; i--{
 			r.Zoom()
+			fmt.Println("star...", fromIdx, i)
 			if isMatch3_3(s[fromIdx:i], r){
-				if isMatch3_2(s, r.Next, stepIdx+1, i){
+				if isMatch3_2(s, r.Next, i){
 					return true
 				}
 			}
@@ -300,7 +300,7 @@ func isMatch3_2(s string, r *ReBlock, stepIdx, fromIdx int) bool {
 				return false
 			}
 			if isMatch3_3(s[fromIdx:i], r){
-				if isMatch3_2(s, r.Next, stepIdx+1, i){
+				if isMatch3_2(s, r.Next, i){
 					return true
 				}
 			}
@@ -317,7 +317,9 @@ func isMatch3_2(s string, r *ReBlock, stepIdx, fromIdx int) bool {
 func isMatch3(s string, p string) bool {
 	phead := splitP(s, p)
 	fmt.Println(phead.Link())
-	return isMatch3_2(s, phead, 0, 0)
+	phead.Zoom()
+	// return false
+	return isMatch3_2(s, phead, 0)
 }
 
 
@@ -418,10 +420,10 @@ func main() {
 	// 		[]byte{'.','.','.','2','7','5','9','.','.'},
 	// 	},
 	// }
-	to_test = to_test[0:1]
+	to_test = to_test
 	for i:=0; i < len(to_test); i++{
 		p1, p2:= to_test[i][0], to_test[i][1]
 		rst := isMatch3(p1, p2)
-		fmt.Println(p1, p2, rst)
+		fmt.Println("rstttt", p1, p2, rst)
 	}
 }

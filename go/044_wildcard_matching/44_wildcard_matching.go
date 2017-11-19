@@ -9,39 +9,200 @@ https://leetcode.com/problems/wildcard-matching/description/
   1st: 算法太慢，但比较简洁
   2nd: 优化 *** 为 *
   3rd: 优化 *?aaaa
-  这次优点:
-     直译能力增强
+  4rd: 根据关键str来分割，比如 a*b*c*aaefafsf*   来优先处理出现次数少的str， 
+
 
 高手答案:
+func isMatch(s string, p string) bool {
+    star := -1
+    sIdx := 0
+    last := 0
+    pIdx := 0
+    for sIdx < len(s) {
+        if pIdx < len(p) && (p[pIdx] == s[sIdx] || p[pIdx] == '?') {
+            sIdx++
+            pIdx++
+        } else if pIdx < len(p) && p[pIdx] == '*' {
+            star = pIdx
+            last = sIdx
+            pIdx++
+        } else if star != -1 { // reset to the star+1 position of p and last (advance by one) position of s 
+            pIdx = star + 1
+            last++
+            sIdx = last
+        } else {
+            return false
+        }
+    }
+    for pIdx < len(p) && p[pIdx] == '*' {
+        pIdx++
+    }
+    return pIdx == len(p)
+}
+
 1. vs高手
-	a) 命名: 
-	b) 行数: 26 < 42
-	c) 思路: 高手选择了先不进行“进位”， 而是最后进位， 我是每循环一次都要把结果加一次
-	d) 技巧：1）如果有一个为"0"则返回0, make可以只传一个len
-
-	高手主要比我快在以下几点：
-	1） 少一层缓存
-	   //高手
-	   for i in num1:
-		   for j in num2:
-			   rst[i+j] += num1[i]*num[j]
-	   //我
-	   for i in num1:
-		   cache = []
-		   for j in num2:
-			   cache[i+j] = num1[i]*num[j]
-		   for x in rst:
-			   # merge cache to rst
-
-	2) 高手选择了先不进行“进位”， 而是最后进位， 我是每循环一次都要把结果加一次
-	3）如果有0直接返回0
-	4）idx从0开始算，而我是倒叙开始算，我这个算起来稍微比较复杂
-
+    * 时间
+       me) timelimit -> 109 ms -> 79 ms
+       master) 15ms
+    * 空间、变量个数
+       me) []string: 1, int: 5， bool: 1, [][]int: 1， []int: 1, 
+       master) int 4个
+    * 行数 
+       me) 112
+       master) 26
+    * 命名、可读性
+    * 技巧
+      master)
+         回滚技巧高明，我用了递归，高手没用，类似于那个数独填充的题目No.37
+         因为这个题的返回值是bool
+         这道题的关键点：
+           1: 试错题。
+           2: 试错失败可回滚。 回滚技巧用了idx
+         我的解法用了递归，用了[]string，递归用了切片。所以造成了很多不必要的数据出来
+         递归题牵扯到几种情况：
+            1）递归完，将结果封装到list返回，这种需要带着筐子（*[]int）去装
+            2) 递归完，只要bool活着int的那种单个值，这个时候回滚就特别重要，高手
+               的回滚技巧很6， 一维的完全可以用一个idx来控制，二维的可以用递归回滚来控制，类似No.37数独填充
 
 2. 此题感悟
-	方法 struct 方法 带不带 *
+	* struct方法如果不用指针，就没法改变自身值类型属性
+	* 此题可以不用递归，只用idx来回滚，因为他是一维的
+	* 递归也可以精妙的回滚，类似数独填充No.37
+	* 试错题都牵扯到回滚，回滚操作越轻越好
 
 */
+
+func isMatch4_2(s string, plst []string)bool{
+
+
+	if len(plst) == 0{ return len(s) == 0}
+	if len(plst) == 1{
+		p := plst[0]
+		if p == "*"{return true}
+		if p[0] == '?'{return len(s) == len(p)}
+		return s == p
+	}
+
+
+	for len(plst)>0 && plst[0] != "*"{
+
+		p := plst[0]
+		if len(s) < len(p){ return false}
+
+		if p[0] == '?' || s[:len(p)] == p{
+
+			s = s[len(p):]
+			plst = plst[1:]
+
+			continue
+		}
+
+		return false
+	}
+
+	for len(plst)>0 && plst[len(plst)-1] != "*"{
+
+		p := plst[len(plst)-1]
+		if len(s) < len(p){return false}
+		if p[0] == '?' || s[len(s)-len(p):len(s)] == p{
+			s = s[0:len(s)-len(p)]
+			plst = plst[0:len(plst)-1]
+			continue
+		}
+		return false
+	}
+
+	if len(plst) <= 1{
+		return isMatch4_2(s, plst)
+	}
+
+	// *str* , *, *a*a*a*aaa*
+	m := make([][]int, len(plst))
+	hasNoStr := true
+	minCount := 0
+	minLeft := 0
+	for i:=0; i<len(plst); i++{
+		m[i] = []int{}
+		p := plst[i]
+		if p[0] == '?'{
+			minCount += len(p)
+			minLeft += len(p)
+			if minCount > len(s){
+				return false
+			}
+			continue
+		}else if p[0] == '*'{
+			continue
+		}
+		hasNoStr = false
+		for j:=minLeft; j+len(p)<=len(s); j++{
+			if s[j: j+len(p)] == p{
+				minLeft = j+len(p)
+				m[i] = append(m[i], j)
+			}
+			for j=j+1; j+len(p) <=len(s); j++{
+				if s[j: j+len(p)] == p{
+					m[i] = append(m[i], j)
+				}
+			}
+		}
+		if len(m[i]) == 0{
+			return false
+		}
+	}
+	if hasNoStr{
+
+		return len(s) >= minCount
+	}
+
+	minCount, minIdx := len(s), -1
+	for i, lst := range m{
+		p := plst[i]
+		if p == "*" || p[0] == '?'{
+			continue
+		}
+		l := len(lst)
+		if l == 0{
+			return false
+		}
+		if l <= minCount{
+			minIdx = i
+			minCount = l
+		}
+	}
+
+	sLen := len(plst[minIdx])
+	minLst := m[minIdx]
+
+	for _, idx := range minLst{
+		if isMatch4_2(s[0:idx], plst[0:minIdx]) && isMatch4_2(s[idx+sLen:], plst[minIdx+1:]){
+			return true
+		}
+	}
+	return false
+}
+
+func isMatch(s string, p string) bool {
+	plst := []string{}
+
+	for i:=0; i<len(p); {
+		if p[i] == '*'{
+			plst = append(plst, "*")
+			for i=i+1; i<len(p) && p[i]=='*'; i++{}
+		}else if p[i] == '?'{
+			s := i
+			for i+=1; i<len(p) && p[i]=='?'; i++{}
+			plst = append(plst, p[s:i])
+		}else{
+			s := i
+			for i+=1; i<len(p) && p[i]!='?' && p[i]!='*'; i++{}
+			plst = append(plst, p[s:i])
+		}
+	}
+
+	return isMatch4_2(s, plst)
+}
+
 
 type ReBlock struct{
 	S string
@@ -413,6 +574,13 @@ func main() {
 		[]string{"abefcdgiescdfimde", "ab*cd?i*de"},
 		[]string{"aaaaaabbaabaaaaabababbabbaababbaabaababaaaaabaaaabaaaabababbbabbbbaabbababbbbababbaaababbbabbbaaaaaaabbaabbbbababbabbaaabababaaaabaaabaaabbbbbabaaabbbaabbbbbbbaabaaababaaaababbbbbaabaaabbabaabbaabbaaaaba", "*bbb**a*******abb*b**a**bbbbaab*b*aaba*a*b**a*abb*aa****b*bb**abbbb*b**bbbabaa*b**ba**a**ba**b*a*a**aaa"},
 		[]string{"baaabbabbbaabbbbbbabbbaaabbaabbbbbaaaabbbbbabaaaaabbabbaabaaababaabaaabaaaabbabbbaabbbbbaababbbabaaabaabaaabbbaababaaabaaabaaaabbabaabbbabababbbbabbaaababbabbaabbaabbbbabaaabbababbabababbaabaabbaaabbba", "*b*ab*bb***abba*a**ab***b*aaa*a*b****a*b*bb**b**ab*ba**bb*bb*baab****bab*bbb**a*a*aab*b****b**ba**abba"},
+		[]string{"b", "*?*?"},
+		[]string{"abbaabbbbababaababababbabbbaaaabbbbaaabbbabaabbbbbabbbbabbabbaaabaaaabbbbbbaaabbabbbbababbbaaabbabbabb", "***b**a*a*b***b*a*b*bbb**baa*bba**b**bb***b*a*aab*a**"},
+		[]string{"abbbaaababbaaabaaabbbabbbbaaabbaaababaabbbbbbaababbabababbababaaabbbbbabababaababaaaaaaabbbaabaabbbaabbabaababbabaababbbabbaaabbbaaaababbaaabbaabaabbbbbaaababaabaabaaabbabaabbbabbbaabbababaabbbbbbbbaaa", "*ba***bba*b**abbaa***a*****b*a*bb*b***a*bbb***a***bba*****a****a*a*b**aaaba*aab*a*aa***a*a*b**b**a*b*"},
+		[]string{"a", "*a*"},
+		[]string{"mississippi", "m*iss*iss*"},
+		[]string{"abefcdgiescdfimde", "ab*cd?i*de"},
+
 	}
 
 	// to_test := [][][]byte{
@@ -428,10 +596,10 @@ func main() {
 	// 		[]byte{'.','.','.','2','7','5','9','.','.'},
 	// 	},
 	// }
-	to_test = to_test
+	to_test = to_test[18:len(to_test)]
 	for i:=0; i < len(to_test); i++{
 		p1, p2:= to_test[i][0], to_test[i][1]
-		rst := isMatch3(p1, p2)
+		rst := isMatch4(p1, p2)
 		fmt.Println("rstttt", p1, p2, rst)
 	}
 }

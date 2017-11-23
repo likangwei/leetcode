@@ -5,6 +5,13 @@ import "fmt"
 
 https://leetcode.com/problems/n-queens/description/
 
+description:
+  The n-queens puzzle is the problem of placing n queens in n*n chessboard and  
+no any two queens can attack each other.
+  Give an Integer n, return all distinct solutions of n*n queens pizzle.
+  Every solution contains an distinct board configuration of the n*n queen pizzle placing. 
+and the "Q" and "." inditive a queen and an empty space respectively.
+
 此题发挥不错，13ms。 大于了 75%的 commiter
 
 

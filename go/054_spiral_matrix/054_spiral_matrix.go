@@ -5,6 +5,8 @@ import "fmt"
 
 https://leetcode.com/problems/spiral-matrix/description/
 
+descrition: Give a metric of  m*n elements (m rows, n columns), return all elements of the metric in spiral sorder.
+
 高手答案:  
 
 1. vs高手

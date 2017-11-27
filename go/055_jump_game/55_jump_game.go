@@ -111,6 +111,57 @@ func canJump4_2(nums []int, target int, cantJump []bool) bool {
 	return false
 }
 
+// solution 5: 26ms
+
+func canJump5(nums []int) bool {
+	cantJump := make([]int, len(nums))
+	return canJump5_2(nums, len(nums)-1, cantJump)
+}
+
+func canJump5_2(nums []int, target int, cantJump []int) bool {
+	if target == 0{
+		return true
+	}
+	if cantJump[target] == -1 {
+		return false
+	}else if cantJump[target] == 1{
+		return true
+	}
+	for i:=target-1; i>=0; i--{
+		curMaxJLen := nums[i]
+		if curMaxJLen >= target-i && canJump5_2(nums, i, cantJump){
+			cantJump[target] = 1
+			return true
+		}
+	}
+	cantJump[target] = -1
+	return false
+}
+
+// master 16ms
+
+func canJump(nums []int) bool {
+    n := len(nums)
+    if n == 0 {
+        return false
+    } else if n == 1 {
+        return true
+    }
+    
+    lastIndex := n-1
+    for i := n-2; i >=0; i-- {
+        if i + nums[i] >= lastIndex{
+            lastIndex = i
+        }
+    }
+    
+    if lastIndex == 0 {
+        return true
+    } else {
+        return false
+    }
+}
+
 func main() {
 	to_test := [][]int{
 		[]int{2,3,1,1,4},
@@ -121,7 +172,7 @@ func main() {
 
 	for i:=0; i < len(to_test); i++{
 		p1 := to_test[i]
-		rst := canJump4(p1)
+		rst := canJump5(p1)
 		fmt.Println(p1, rst)
 	}
 

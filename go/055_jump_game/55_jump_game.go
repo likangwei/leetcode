@@ -87,22 +87,27 @@ func canJump3_2(nums []int, target int) bool {
 	return false
 }
 
-// solution 4:  
+// solution 4: 35ms
 
 func canJump4(nums []int) bool {
-	return canJump3_2(nums, len(nums)-1)
+	cantJump := make([]bool, len(nums))
+	return canJump4_2(nums, len(nums)-1, cantJump)
 }
 
-func canJump4_2(nums []int, target int) bool {
+func canJump4_2(nums []int, target int, cantJump []bool) bool {
 	if target == 0{
 		return true
 	}
+	if cantJump[target]{
+		return false
+	}
 	for i:=target-1; i>=0; i--{
 		curMaxJLen := nums[i]
-		if curMaxJLen >= target-i && canJump3_2(nums, i){
+		if curMaxJLen >= target-i && canJump4_2(nums, i, cantJump){
 			return true
 		}
 	}
+	cantJump[target] = true
 	return false
 }
 
@@ -116,7 +121,7 @@ func main() {
 
 	for i:=0; i < len(to_test); i++{
 		p1 := to_test[i]
-		rst := canJump3(p1)
+		rst := canJump4(p1)
 		fmt.Println(p1, rst)
 	}
 

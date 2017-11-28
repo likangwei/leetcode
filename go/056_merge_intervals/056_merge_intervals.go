@@ -16,7 +16,13 @@ https://leetcode.com/problems/merge-intervals/description/
     * 是否有递归
 2. 此题感悟
 
+此次做的差的地方:
 
+此次发挥好的地方:
+
+之前的总结是否游泳？这次没用上的原因是？以后如何保证能用上？
+
+后续如何改进:
 */
 
 func main() {

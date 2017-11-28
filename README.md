@@ -45,9 +45,9 @@
 * 在手动验证算法思路时，要根据testcase的多个维度制造，比如nums []int, 要从排序，长度等维度来造几个数据
 
 ### 算法速度
-* 缩小对比范围，或递归范围。 No.44
-
-* 尽可能减少缓存。如list, map等。
+* 不用递归 No.44(wildcard matching) No.55 (jump game)
+* 缩小对比范围
+* 尽可能减少缓存。如list, map等。 No.55 (jump game)
    1） 查看规律，能用数字表示或者idx来控制的话就不再生成一个list
 
 * 算法类用while比较快，因为range和xrange都有开销

@@ -6,6 +6,11 @@ import "fmt"
 https://leetcode.com/problems/jump-game/description/
 descrition: 
 
+Given an array of non-negative integers. You are initially positioned at the first
+index of the array. Each element represents your maximum jump length at that postion.
+Determine if you are able reach the last position.
+
+
 我的答案
 1st: timelimit
 2nd: 1693ms

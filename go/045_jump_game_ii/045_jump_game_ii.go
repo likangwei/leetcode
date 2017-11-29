@@ -2,7 +2,7 @@
 package main
 import "fmt"
 /*
-
+TAG: array, greedy
 https://leetcode.com/problems/jump-game-ii/description/
 
 高手答案:  
@@ -18,11 +18,18 @@ https://leetcode.com/problems/jump-game-ii/description/
 
 此次做的差的地方:
 
+专家算法备注：BFS。BFS在求解最短路径或者最短步数上有很多的应用。
+
+
 此次发挥好的地方:
+* 代码行数首次超过专家答案
 
 之前的总结是否游泳？这次没用上的原因是？以后如何保证能用上？
 
 后续如何改进:
+
+扩展思考：
+    为什么查看能否到最后要倒序来做，而查看最短步数要正序来做？
 */
 
 func jump(nums []int) int {
@@ -40,7 +47,7 @@ func jump(nums []int) int {
 	return rst
 }
 
-//master
+//Expert answer
 func jump_master(nums []int) int {
    // BFS
     if len(nums) < 2 {

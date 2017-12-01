@@ -5,6 +5,32 @@ import "fmt"
 TAG: array, greedy
 https://leetcode.com/problems/jump-game-ii/description/
 
+description:
+  Give an array of  non-nevegation nums. You ar initially postioned at first
+
+  index of the array. Every elements means your maximum jump lenght at that postion.
+
+  please return the min jump step .
+
+Note:
+  you are assume the array can reach last postion.
+  you are assume that you can always reach the last index.
+
+错误单词
+
+non-nevegation --> non-negative
+          nums --> integers
+     postioned --> positioned
+     Every     --> Each
+your goal is to reach the last index in the minimum number of jumps.
+
+For example
+Given array A [2,3,1,1,4]
+The minimum number of jumps to reach the last index is 2.
+(jump 1 step from index 0 to 1, the 3 steps to teh last index)
+
+
+
 高手答案:  
 
 1. vs高手
@@ -22,9 +48,9 @@ https://leetcode.com/problems/jump-game-ii/description/
 
 
 此次发挥好的地方:
-* 代码行数首次超过专家答案
+* 代码行数首次少于专家答案
 
-之前的总结是否游泳？这次没用上的原因是？以后如何保证能用上？
+之前的总结是否有用？这次没用上的原因是？以后如何保证能用上？
 
 后续如何改进:
 

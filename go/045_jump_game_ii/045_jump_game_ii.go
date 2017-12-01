@@ -29,6 +29,7 @@ Given array A [2,3,1,1,4]
 The minimum number of jumps to reach the last index is 2.
 (jump 1 step from index 0 to 1, the 3 steps to teh last index)
 
+总结:
 
 
 高手答案:  

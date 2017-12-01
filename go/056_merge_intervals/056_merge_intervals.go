@@ -5,7 +5,7 @@ import "fmt"
 
 https://leetcode.com/problems/merge-intervals/description/
 
-高手答案:  
+description:
 
 1. vs高手
     * 时间
@@ -16,14 +16,31 @@ https://leetcode.com/problems/merge-intervals/description/
     * 是否有递归
 2. 此题感悟
 
-此次做的差的地方:
+Q: 此次做的差的地方?
+A: 
 
-此次发挥好的地方:
+Q: 此次发挥好的地方?
+A:
 
-之前的总结是否游泳？这次没用上的原因是？以后如何保证能用上？
+Q: 为什么你没有达到专家思路？
+A:
 
-后续如何改进:
+Q: 之前的总结是否生效？这次没用上的原因是？以后如何保证能用上？
+A:
+
+Q: 后续如何改进?
+A:
+
+Q: 此问题是否可以有实际应用场景？
+A:
+
 */
+
+//Expert answer
+
+func reProduction(){
+
+}
 
 func main() {
 	to_test = []int{}

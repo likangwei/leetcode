@@ -6,6 +6,25 @@ import "fmt"
 https://leetcode.com/problems/add-and-search-word-data-structure-design/description/
 
 description:
+Design a data structure that support the following operations:
+
+```
+void addWord(word)
+bool search(word)
+```
+
+search(word)  can search a literal word or a regular expression string containing only letter a-z or . A . means it can represent any one letters。
+
+Note:
+  you may assume that all words are consist of lowercase letters a-z.
+
+words:
+
+literal. search(word) can search a literal word or a re string.
+consist. words are consist of lowercase letters
+lowercase
+letter
+
 
 专家答案:
 type WordDictionary struct {

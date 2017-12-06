@@ -3,7 +3,7 @@ package main
 import "fmt"
 /*
 
-https://leetcode.com/problems/graph_valid_tree/description/
+https://leetcode.com/problems/graph-valid-tree/description/
 
 description:
 
@@ -46,8 +46,7 @@ A:
 Q: 此问题是否可以有实际应用场景？
 A:
 
-Q: 此题目对应的TAG是union-find, breadth-first-search, 
-                  depth-first-search, graph, 此TAG解决了哪类问题？
+Q: 此题目对应的TAG是union-find, breadth-first-search, depth-first-search, graph, 此TAG解决了哪类问题？
 A: 
 
 

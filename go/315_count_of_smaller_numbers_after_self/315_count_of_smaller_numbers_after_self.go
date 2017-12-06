@@ -3,7 +3,7 @@ package main
 import "fmt"
 /*
 
-https://leetcode.com/problems/count_of_smaller_numbers_after_self/description/
+https://leetcode.com/problems/count-of-smaller-numbers-after-self/description/
 
 description:
 

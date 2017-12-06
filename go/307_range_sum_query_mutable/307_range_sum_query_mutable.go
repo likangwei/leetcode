@@ -3,7 +3,7 @@ package main
 import "fmt"
 /*
 
-https://leetcode.com/problems/range_sum_query_mutable/description/
+https://leetcode.com/problems/range-sum-query-mutable/description/
 
 description:
 

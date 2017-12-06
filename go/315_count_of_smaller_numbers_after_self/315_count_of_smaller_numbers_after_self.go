@@ -7,10 +7,15 @@ https://leetcode.com/problems/count-of-smaller-numbers-after-self/description/
 
 description:
 
+
+words:
+maintain. Every node will maintain a val sum recording the total of number on it's left bottom side
+
+
 # 速度类
 
 Q: 此次的时间消耗是？ vs 专家？
-A: 
+A: 1st: 1116ms https://leetcode.com/submissions/detail/130996108/
 
 Q: 此题目的算法复杂度是？
 A:
@@ -58,16 +63,64 @@ A:
 
 //Expert answer
 
-func reProduction(){
+type Node struct{
+	val int
+	count int
+	next *Node
+}
 
+func (this *Node)Str()string{
+	s := ""
+	for this != nil{
+		s += fmt.Sprintf("->%d", this.val)
+		this = this.next
+	}
+	return s
+}
+
+func countSmaller(nums []int) []int {
+	if len(nums) == 0{
+		return nums
+	}
+	head := &Node{val:nums[len(nums)-1], next:nil, count:1}
+	rst := make([]int, len(nums))
+	for i:=len(nums)-2; i>=0; i--{
+		n := nums[i]
+		if n < head.val{
+			curNode := Node{val:n, next:head, count:1}
+			head = &curNode
+			continue
+		}
+		var pre *Node
+		cur := head
+		curTotal := 0
+		for cur != nil && cur.val < n{
+			curTotal += cur.count
+			pre = cur
+			cur = cur.next
+		}
+		rst[i] = curTotal
+
+		if cur == nil{
+			pre.next = &Node{val:n, next:nil, count:1}
+		}else if cur.val == n{
+			cur.count = cur.count + 1
+		}else{
+			pre.next = &Node{val:n, next:cur, count:1}
+		}
+		// fmt.Println(head.Str())
+	}
+	return rst
 }
 
 func main() {
-	to_test = []int{}
+	to_test := [][]int{
+		[]int{5, 2, 6, 1},
+	}
 
 	for i:=0; i < len(to_test); i++{
 		p1 := to_test[i]
-		rst := combinationSum2(p1, to_test2[i])
+		rst := countSmaller(p1)
 		fmt.Println(p1, rst)
 	}
 

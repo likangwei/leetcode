@@ -49,6 +49,8 @@ A:
 Q: 此题目对应的TAG是union-find, breadth-first-search, depth-first-search, graph, 此TAG解决了哪类问题？
 A: 
 
+新get到的知识汇总：
+* 
 
 3. TODO:
 

@@ -11,6 +11,41 @@ description:
 words:
 maintain. Every node will maintain a val sum recording the total of number on it's left bottom side
 
+专家答案:
+public class Solution {
+    class Node {
+        Node left, right;
+        int val, sum, dup = 1;
+        public Node(int v, int s) {
+            val = v;
+            sum = s;
+        }
+    }
+    public List<Integer> countSmaller(int[] nums) {
+        Integer[] ans = new Integer[nums.length];
+        Node root = null;
+        for (int i = nums.length - 1; i >= 0; i--) {
+            root = insert(nums[i], root, ans, i, 0);
+        }
+        return Arrays.asList(ans);
+    }
+    private Node insert(int num, Node node, Integer[] ans, int i, int preSum) {
+        if (node == null) {
+            node = new Node(num, 0);
+            ans[i] = preSum;
+        } else if (node.val == num) {
+            node.dup++;
+            ans[i] = preSum + node.sum;
+        } else if (node.val > num) {
+            node.sum++;
+            node.left = insert(num, node.left, ans, i, preSum);
+        } else {
+            node.right = insert(num, node.right, ans, i, preSum + node.dup + node.sum);
+        }
+        return node;
+    }
+}
+
 
 # 速度类
 
@@ -63,6 +98,45 @@ A:
 
 //Expert answer
 
+type BTreeNode struct{
+	val int
+	sum int
+	dup int
+	left *BTreeNode
+	right *BTreeNode
+}
+
+func insertNode(n int ,i int, node *BTreeNode, preSum int, rst []int) *BTreeNode{
+	if node == nil{
+		node = &BTreeNode{val: n, sum: 0, dup: 1}
+		rst[i] = preSum
+	}else if n > node.val{
+		//turn right
+		node.right = insertNode(n, i, node.right, preSum+node.sum+node.dup, rst)
+	}else if n == node.val{
+		node.dup = node.dup + 1
+		rst[i] = preSum + node.sum
+	}else{
+		// turn left
+		node.sum = node.sum + 1
+		node.left = insertNode(n, i, node.left, preSum, rst)
+	}
+	return node
+}
+
+
+func countSmaller(nums []int) []int {
+	rst := make([]int, len(nums))
+	var root *BTreeNode
+	for i:=len(nums)-1; i>=0; i--{
+		n := nums[i]
+		root = insertNode(n, i, root, 0, rst)
+	}
+	return rst
+}
+
+
+//mine
 type Node struct{
 	val int
 	count int
@@ -78,7 +152,7 @@ func (this *Node)Str()string{
 	return s
 }
 
-func countSmaller(nums []int) []int {
+func countSmaller2(nums []int) []int {
 	if len(nums) == 0{
 		return nums
 	}
@@ -116,12 +190,15 @@ func countSmaller(nums []int) []int {
 func main() {
 	to_test := [][]int{
 		[]int{5, 2, 6, 1},
+		[]int{26,78,27,100,33,67,90,23,66,5,38,7,35,23,52,22,83,51,98,69,81,32,78,28,94,13,2,97,3,76,99,51,9,21,84,66,65,36,100,41},
 	}
-
 	for i:=0; i < len(to_test); i++{
 		p1 := to_test[i]
 		rst := countSmaller(p1)
-		fmt.Println(p1, rst)
+		rst2 := countSmaller2(p1)
+		fmt.Println(p1)
+		fmt.Println(rst)
+		fmt.Println(rst2)
 	}
 
 }

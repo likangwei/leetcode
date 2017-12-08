@@ -6,7 +6,13 @@ import "fmt"
 https://leetcode.com/problems/count-of-smaller-numbers-after-self/description/
 
 description:
+You are given an integer array nums and you have to return a new counts
+array. The counts array has the property where counts[i] is the number
+of       smaller elements to the right of nums[i].
 
+you are given an integer array nums and you have to return a new _count_
+array. the count array has the _properties_ _that_ counts[i] is the number
+of _the_ smaller elements to the right of nums[i].
 
 words:
 maintain. Every node will maintain a val sum recording the total of number on it's left bottom side

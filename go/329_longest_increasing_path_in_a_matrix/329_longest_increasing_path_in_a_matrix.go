@@ -3,7 +3,7 @@ package main
 import "fmt"
 /*
 
-https://leetcode.com/problems/longest_increasing_path_in_a_matrix/description/
+https://leetcode.com/problems/longest-increasing-path-in-a-matrix/description/
 
 description:
 
@@ -36,7 +36,6 @@ A:
 Q: 此次发挥好的地方?
 A:
 
-
 Q: 之前的总结是否生效？这次没用上的原因是？以后如何保证能用上？
 A:
 
@@ -49,8 +48,15 @@ A:
 Q: 此题目对应的TAG是topological-sort, depth-first-search, memoization, 此TAG解决了哪类问题？
 A: 
 
+Q: 你觉得专家答案有什么值得你学习的地方？ 后续如何保证能用到，或者提高用到的概率？
+
+Q: 对于日常生活中，专家的思维方式给我带来了哪些启发？
+
+最终总结，并加入复习列表:
+ 
 
 3. TODO:
+	* 
 
 */
 

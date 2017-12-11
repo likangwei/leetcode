@@ -108,7 +108,7 @@ func (this *Node)Str() string {
 }
 
 func getNodeHeight(node *Node, maxStep int, jumpFrom int) int {
-	// fmt.Printf("getNodeHeight node %v maxStep %v jumpFrom %v\n", node.Str(), maxStep, jumpFrom)
+	fmt.Printf("getNodeHeight node %v maxStep %v jumpFrom %v\n", node.Str(), maxStep, jumpFrom)
 	height := 0
 	if maxStep == -1{
 		return -1
@@ -123,8 +123,8 @@ func getNodeHeight(node *Node, maxStep int, jumpFrom int) int {
 				}else{
 					node.depths[rela.val] = l+1
 				}
-					
-			}else if node.depths[rela.val] == -1{
+			}
+			if node.depths[rela.val] == -1 || node.depths[rela.val] > maxStep{
 				return -1
 			}
 			height = max(height, node.depths[rela.val])
@@ -193,7 +193,7 @@ func main() {
 					1414, 
 					  5000}
 	// to_test = to_test[3:4]
-	for i:=0; i < len(to_test); i++{
+	for i:=0; i < 1; i++{
 		p1 := to_test[i]
 		p2 := to_test2[i]
 		rst := findMinHeightTrees(p2, p1)

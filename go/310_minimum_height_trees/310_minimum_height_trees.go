@@ -152,6 +152,27 @@ func findMinHeightTrees(n int, edges [][]int) []int {
 	return leafs
 }
 
+小技巧：
+  faster: 
+    var a int
+    for _, a = range lst{
+    }
+  slow
+    for _, a := range lst{
+    }
+
+  faster:
+    lst := make([]int, 0, 100)
+    for i:=0; i<100;i++{
+		append(lst, i)
+    }
+   slow:
+     lst := []int{}
+    for i:=0; i<100; i++{
+	  append(slt, i)
+    }
+
+
 3. TODO:
 	* 
 
@@ -194,7 +215,7 @@ func getNodeHeight(node *Node, maxStep int, jumpFrom int) int {
 	return height
 }
 
-func findMinHeightTrees(n int, edges [][]int) []int {
+func findMinHeightTrees2(n int, edges [][]int) []int {
 	if len(edges) == 0{
 		return []int{0}
 	}
@@ -228,6 +249,40 @@ func findMinHeightTrees(n int, edges [][]int) []int {
 	return rst
 }
 
+func findMinHeightTrees(n int, edges [][]int) []int {
+	if n < 2{
+		return []int{0}
+	}
+	relas := make(map[int][]int)
+	degrees := make(map[int]int)
+	for _, e := range edges{
+		degrees[e[0]]++
+		degrees[e[1]]++
+		relas[e[0]] = append(relas[e[0]], e[1])
+		relas[e[1]] = append(relas[e[1]], e[0])
+	}
+	leafs := []int{}
+	for k, v := range degrees{
+		if v == 1{
+			leafs = append(leafs, k)
+		}
+	}
+	for n > 2{
+		leaveLeafs := []int{}
+		for _, val := range leafs{
+			n-- # 这慢了
+			for _, rela := range relas[val]{
+				degrees[rela] --
+				if degrees[rela] == 1{
+					leaveLeafs = append(leaveLeafs, rela)
+				}
+			}
+		}
+		leafs = leaveLeafs
+	}
+	return leafs
+}
+
 func max(a, b int) int{
 	if a > b{
 		return a
@@ -253,7 +308,7 @@ func main() {
 					1414, 
 					  5000}
 	// to_test = to_test[3:4]
-	for i:=0; i < 1; i++{
+	for i:=0; i < len(to_test); i++{
 		p1 := to_test[i]
 		p2 := to_test2[i]
 		rst := findMinHeightTrees(p2, p1)

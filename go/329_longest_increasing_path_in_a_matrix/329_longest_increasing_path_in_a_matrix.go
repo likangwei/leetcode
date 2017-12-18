@@ -7,6 +7,20 @@ https://leetcode.com/problems/longest-increasing-path-in-a-matrix/description/
 
 description:
 
+Given an interger matrix. find the length of the longest
+increasing path.
+
+From each cell. you can either move to four directions:
+left ,right ,up or down. you may not move diagonally
+or move outside of the boundary(i.e. wrap-around is not allowed)
+
+
+i.e. 即
+increasing 正在增加的
+diagonally 斜向的
+boundary 边界
+wrap-around 环绕式的
+
 # 速度类
 
 Q: 此次的时间消耗是？ vs 专家？

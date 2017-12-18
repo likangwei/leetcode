@@ -5,54 +5,125 @@ import "fmt"
 
 https://leetcode.com/problems/minimum-height-trees/description/
 
-description:
+For a undirected graph with tree characteristics, we can choose any 
+node as the root. The result graph is then a rooted tree. Among all 
+possible rooted trees, those with minimum height are called minimum
+height trees (MHTs). Given such a graph, write a function to find
+all the MHTs and return a list of their root labels.
+
+Format
+The graph contains n nodes which are labeled from 0 to n - 1. You
+ will be given the number n and a list of undirected edges (each 
+ edge is a pair of labels).
+
+You can assume that no duplicate edges will appear in edges. Since 
+all edges are undirected, [0, 1] is the same as [1, 0] and thus 
+will not appear together in edges.
+
+Example 1:
+
+Given n = 4, edges = [[1, 0], [1, 2], [1, 3]]
+
+        0
+        |
+        1
+       / \
+      2   3
+return [1]
+
+Example 2:
+
+Given n = 6, edges = [[0, 3], [1, 3], [2, 3], [4, 3], [5, 4]]
+
+     0  1  2
+      \ | /
+        3
+        |
+        4
+        |
+        5
+return [3, 4]
+
+Note:
+
+(1) According to the definition of tree on Wikipedia: “a tree is an 
+undirected graph in which any two vertices are connected by exactly
+ one path. In other words, any connected graph without simple cycles
+ is a tree.”
+
+(2) The height of a rooted tree is the number of edges on the longest
+ downward path between the root and a leaf.
+
+undirected 无方向
+characteristics 特点
+rooted tree 有根的树
+among 其中
+label 标签
+since 由于、从什么时候开始
+thus 从而
+According 根据
+definition 定义
+vertices 顶点
+exactly 究竟、准确、恰好
+downward 向下
 
 # 速度类
 
 Q: 此次的时间消耗是？ vs 专家？
-A: 
+A: 155ms vs 75ms
 
 Q: 此题目的算法复杂度是？
-A:
+A: O(n)
 
 # 可读性
 Q: 此次的算法精炼度是怎么样的？
-A:
+A: 还不错
 
 Q: 此次的命名、可读性怎么样？
-A:
+A: OK
 
 # 思路类
 Q: 此次是否有你递归，专家没递归的情况？
-A: 
+A: 有，专家思路是剥叶子，而我是真的做了路径计算
 
 Q: 为什么你没有想到专家思路？
-A:
+A: 当时脑子里有一个模糊的想法，要不要通过剥叶子来实现，但后来脑子里产生了
+   疑问，有没有可能出现三个label的情况， 然后脑子一蒙就略过了
 
 # 后续改进
 Q: 此次做的差的地方?
-A: 
+A: 审题不清： graph contains n node where are label from 0 - n-1 
 
 Q: 此次发挥好的地方?
-A:
+A: 根据自己的思路也实现了
 
 Q: 之前的总结是否生效？这次没用上的原因是？以后如何保证能用上？
-A:
+A: 这次还是有模糊想法没记下来，下次做题要专门记录模糊想法
 
 Q: 后续如何改进?
-A:
+A: 下次做题要专门记录思考过程，模糊的想法记下来，可以记到代码注释里
+   或者本子上
 
 Q: 此问题是否可以有实际应用场景？
-A:
+A: 地图找路径之类的估计会用到此问题
 
 Q: 此题目对应的TAG是graph, breadth-first-search, 此TAG解决了哪类问题？
-A: 
+A: 宽度优先，找最短的路径
 
 Q: 你觉得专家答案有什么值得你学习的地方？ 后续如何保证能用到，或者提高用到的概率？
+   专家就是剥叶子，对于图来说，好像波叶子的操作还挺常见，包括dag环的判断
 
 Q: 对于日常生活中，专家的思维方式给我带来了哪些启发？
 
+
 最终总结，并加入复习列表:
+1. 此次审题不清： graph contains n node where are label from 0 - n-1。
+   还是得好好学习英语，而不是现在看题目囫囵吞枣
+2. 图对于剥落操作还是比较常见的，比如这个找MHTs, 和dag环问题
+3. 模糊的想法还是没有记录下来， 如何才能让自己的模糊的想法不丢失？ 加入TODO
+4. 发挥好的地方在于： 按照自己的思路也实现了此问题
+
+
 
 func findMinHeightTrees(n int, edges [][]int) []int {
    if n == 1 {
@@ -91,6 +162,27 @@ func findMinHeightTrees(n int, edges [][]int) []int {
 	}
 	return leafs
 }
+
+小技巧：
+  faster: 
+    var a int
+    for _, a = range lst{
+    }
+  slow
+    for _, a := range lst{
+    }
+
+  faster:
+    lst := make([]int, 0, 100)
+    for i:=0; i<100;i++{
+		append(lst, i)
+    }
+   slow:
+     lst := []int{}
+    for i:=0; i<100; i++{
+	  append(slt, i)
+    }
+
 
 3. TODO:
 	* 
@@ -133,7 +225,7 @@ func getNodeHeight(node *Node, maxStep int, jumpFrom int) int {
 	return height
 }
 
-func findMinHeightTrees(n int, edges [][]int) []int {
+func findMinHeightTrees2(n int, edges [][]int) []int {
 	if len(edges) == 0{
 		return []int{0}
 	}
@@ -167,6 +259,40 @@ func findMinHeightTrees(n int, edges [][]int) []int {
 	return rst
 }
 
+func findMinHeightTrees(n int, edges [][]int) []int {
+	if n < 2{
+		return []int{0}
+	}
+	relas := make(map[int][]int)
+	degrees := make(map[int]int)
+	for _, e := range edges{
+		degrees[e[0]]++
+		degrees[e[1]]++
+		relas[e[0]] = append(relas[e[0]], e[1])
+		relas[e[1]] = append(relas[e[1]], e[0])
+	}
+	leafs := []int{}
+	for k, v := range degrees{
+		if v == 1{
+			leafs = append(leafs, k)
+		}
+	}
+	for n > 2{
+		leaveLeafs := []int{}
+		for _, val := range leafs{
+			n-- # 这慢了
+			for _, rela := range relas[val]{
+				degrees[rela] --
+				if degrees[rela] == 1{
+					leaveLeafs = append(leaveLeafs, rela)
+				}
+			}
+		}
+		leafs = leaveLeafs
+	}
+	return leafs
+}
+
 func max(a, b int) int{
 	if a > b{
 		return a
@@ -192,7 +318,7 @@ func main() {
 					1414, 
 					  5000}
 	// to_test = to_test[3:4]
-	for i:=0; i < 1; i++{
+	for i:=0; i < len(to_test); i++{
 		p1 := to_test[i]
 		p2 := to_test2[i]
 		rst := findMinHeightTrees(p2, p1)

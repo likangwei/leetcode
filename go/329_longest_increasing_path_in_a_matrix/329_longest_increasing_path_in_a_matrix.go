@@ -7,6 +7,20 @@ https://leetcode.com/problems/longest-increasing-path-in-a-matrix/description/
 
 description:
 
+Given an interger matrix. find the length of the longest
+increasing path.
+
+From each cell. you can either move to four directions:
+left ,right ,up or down. you may not move diagonally
+or move outside of the boundary(i.e. wrap-around is not allowed)
+
+
+i.e. 即
+increasing 正在增加的
+diagonally 斜向的
+boundary 边界
+wrap-around 环绕式的
+
 # 速度类
 
 Q: 此次的时间消耗是？ vs 专家？
@@ -59,19 +73,67 @@ Q: 对于日常生活中，专家的思维方式给我带来了哪些启发？
 	* 
 
 */
-
-//Expert answer
-
-func reProduction(){
-
+func max(a, b int)int{
+	if a > b{
+		return a
+	}
+	return b
 }
 
-func main() {
-	to_test = []int{}
+func getPath(i, j, m, n int, matrix [][]int, cache [][][]int, minNum int)int{
+	if i < 0 || i > m-1 || j < 0 || j > n-1 || matrix[i][j] < minNum{
+		return 0
+	}
+	if cache[i][j][0] == 1{
+		return cache[i][j][1]
+	}
+	rst := 1
+	num := matrix[i][j]
+	//left
+	rst = max(rst, 1+getPath(i, j-1, m, n, matrix, cache, num+1))
+	//right
+	rst = max(rst, 1+getPath(i, j+1, m, n, matrix, cache, num+1))
+	//up
+	rst = max(rst, 1+getPath(i-1, j, m, n, matrix, cache, num+1))
+	//down
+	rst = max(rst, 1+getPath(i+1, j, m, n, matrix, cache, num+1))
+	cache[i][j] = []int{1, rst}
+	return rst
+}
 
+func longestIncreasingPath(matrix [][]int) int {
+	if len(matrix) == 0 || len(matrix[0]) == 0{
+		return 0 
+	}
+	m, n := len(matrix),len(matrix[0])
+	cache := make([][][]int, m)
+	for i:=0; i<m; i++{
+		cache[i] = make([][]int, n)
+		for j:=0; j<n; j++{
+			cache[i][j] = []int{0, 0}
+		}
+	}
+	rst := 0
+	for i:=0; i<m; i++{
+		for j:=0; j<n; j++{
+			p := getPath(i, j, m, n, matrix, cache, matrix[i][j]-1)
+			rst = max(p, rst)
+		}
+	}
+	return rst
+}
+func main() {
+	to_test2 := [][]int{
+		[]int{9, 9, 4},
+		[]int{6, 6, 8},
+		[]int{2, 1, 1},
+	}
+	to_test := [][][]int{
+		to_test2,
+	}
 	for i:=0; i < len(to_test); i++{
 		p1 := to_test[i]
-		rst := combinationSum2(p1, to_test2[i])
+		rst := longestIncreasingPath(p1)
 		fmt.Println(p1, rst)
 	}
 

@@ -118,7 +118,6 @@ func getNodeHeight(node *Node, maxStep int, jumpFrom int) int {
 			if node.depths[rela.val] == 0{
 				l := getNodeHeight(rela, maxStep-1, node.val)
 				if l == -1{
-					node.depths[rela.val] = -1
 					return -1
 				}else{
 					node.depths[rela.val] = l+1
@@ -130,7 +129,7 @@ func getNodeHeight(node *Node, maxStep int, jumpFrom int) int {
 			height = max(height, node.depths[rela.val])
 		}
 	}
-	// fmt.Println(node.val, "rst", height)
+	fmt.Println(node.val, "rst", height)
 	return height
 }
 
